@@ -10,13 +10,14 @@ var order_productsRouter = require('./routes/order_products');
 var order_statusesRouter = require('./routes/order_statuses');
 var ordersRouter = require('./routes/orders');
 var order_detailsRouter = require('./routes/order_details');
-
+var categoriesRouter = require("./routes/categories");
+var productsRouter = require("./routes/products");
 var app = express();
 app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,6 +30,8 @@ app.use('/order_products',order_productsRouter);
 app.use('/order_statuses',order_statusesRouter);
 app.use('/orders',ordersRouter);
 app.use('/order_details',order_detailsRouter);
+app.use('/categories', categoriesRouter);
+app.use('/products', productsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
