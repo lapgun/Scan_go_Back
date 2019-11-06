@@ -6,9 +6,9 @@ router.get('/', function(req, res) {
   let search = req.query.search ;
   let currentPage = req.query.page ? parseInt(req.query.page) : 1 ;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
-    db.Order_product.findAndCountAll({
+    db.Order.findAndCountAll({
       where : {
-        name: {
+        id: {
           [Op.substring]: '%'+search+'%'
         }
       },
@@ -31,25 +31,25 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:id', function(req, res) {
-  db.Order_product.findByPk(req.params.id).then(result => {
+  db.Order.findByPk(req.params.id).then(result => {
       return res.send(result);
     })
 });
 
 router.post('/', function(req, res) {
-  let order_product = req.body;
+  let order = req.body;
 
-  db.Order_product.create(order_product).then(result => {
+  db.Order.create(order).then(result => {
     return res.send(result);
    })
 });
 
 router.put('/:id', function(req, res) {
-  let order_product_id = req.body.id;
-  let order_product = req.body;
-  db.Order_product.update(order_product, {
+  let order_id = req.body.id;
+  let order = req.body;
+  db.Order.update(order, {
     where : {
-      id: order_product_id
+      id: order_id
     }
   }).then(result => {
     res.send(result)
@@ -57,14 +57,14 @@ router.put('/:id', function(req, res) {
 });
 
 router.delete('/:id',function(req, res){
-  let order_product_id = req.params.id;
+  let order_id = req.params.id;
   
-    if (!order_product_id) { 
-        return res.status(400).send({ error: true, message: 'Please provide order_product_id' });
+    if (!order_id) { 
+        return res.status(400).send({ error: true, message: 'Please provide order_id' });
     }
-    db.Order_product.destroy({
+    db.Order.destroy({
         where : {
-            id : order_product_id
+            id : order_id
         }
     }).then(result => {
         console.log("Done");
