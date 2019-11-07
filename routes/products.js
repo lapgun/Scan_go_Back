@@ -9,7 +9,9 @@ router.get("/", function(req, res, next) {
 
 // Get by id
 router.get("/:id", function(req, res, next) {
-  db.Products.findByPk(req.params.id).then(results => res.send({ data: results }));
+  db.Products.findByPk(req.params.id).then(results =>
+    res.send({ data: results })
+  );
 });
 
 // Post
@@ -20,7 +22,7 @@ router.post("/", function(req, res, next) {
 
 //Update
 
-router.put("/", function(req, res, next) {
+router.put("/:id", function(req, res, next) {
   let form = req.body;
   db.Products.update(form, {
     where: {
