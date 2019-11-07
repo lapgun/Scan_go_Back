@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('Products', [{
     name :'Hến',
-    categotyId :  4,
+    categoriesId :  4,
     picture:'https://media-ak.static-adayroi.com/400_400/80/h7d/h4e/9623097507870.jpg',
     price: 16800 ,
     description:'Sản phẩm có thể cắt nhỏ hoặc làm sạch tùy vào khối lượng',

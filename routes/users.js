@@ -1,11 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 var db = require('../models');
 var passwordHash = require('password-hash');
 var jwt = require('jsonwebtoken');
-
 const Op = db.Sequelize.Op;
-/* GET users listing. */
 router.get('/', function (req, res) {
     let search = req.query.search;
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
@@ -86,11 +84,10 @@ router.post('/login', function (req, res) {
         }
     ).then(result => {
         if (result) {
-            let token = jwt.sign({ user_id: result.id }, 'shhhhh');
-            return  res.send({check : passwordHash.verify(password, result.password),data:result, token : token})
+            let token = jwt.sign({user_id: result.id}, 'shhhhh');
+            return res.send({check: passwordHash.verify(password, result.password), data: result, token: token})
         }
         return res.send({error: false, message: ' email or password error'})
     });
 });
-
 module.exports = router;
