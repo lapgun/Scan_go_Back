@@ -21,7 +21,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       role: {
-        type: Sequelize.INTEGER
+        type: Sequelize.BOOLEAN,
+        defaultValue :false
       },
       createdAt: {
         allowNull: false,
