@@ -13,12 +13,12 @@ var order_detailsRouter = require('./routes/order_details');
 var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
 var adminsRouter = require("./routes/admins");
+var jwt = require('jsonwebtoken');
 var app = express();
 app.use(cors());
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-app.use(cors())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

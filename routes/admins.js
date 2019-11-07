@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var db = require('../models');
+
+var passwordHash = require('password-hash');
+var jwt = require('jsonwebtoken');
+
 const Op = db.Sequelize.Op;
 router.get('/', function(req, res) {
   let search = req.query.search ;
@@ -38,7 +42,7 @@ router.get('/:id', function(req, res) {
 
 router.post('/', function(req, res) {
   let admin = req.body;
-
+  admin.password = passwordHash.generate(admin.password);
   db.Admin.create(admin).then(result => {
     return res.send(result);
    })
@@ -71,5 +75,23 @@ router.delete('/:id',function(req, res){
         return res.send({ error: false, data: result, message: 'user has been updated successfully.' });
       });
 }); 
+
+router.post('/login', function(req,res){
+  let email = req.body.email;
+  db.Admin.findOne({
+    where : {
+      email : email
+    }
+  }).then(result => {
+      
+    if(result) {
+      if(passwordHash.verify(req.body.password, result.password)) {
+        let token = jwt.sign({ admin_id: result.id }, 'qtahhnmsv');
+        return res.send({data:result, token:token});
+      }
+    }
+      return res.send({ error: false, data: result, message: 'No email.' });
+  })
+});
 
 module.exports = router;

@@ -11,7 +11,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      categotyId: {
+      categoriesId: {
         type: Sequelize.INTEGER
       },
       picture: {
