@@ -57,7 +57,7 @@ router.post('/', function (req, res) {
         return res.send({error: false, data: result, message: 'users list.'});
     });
 });
-router.put('/:id', function (req, res) {
+router.put('/edit', function (req, res) {
     let user_id = req.body.id;
     let user = req.body;
     user.password = passwordHash.generate(user.password);
@@ -92,6 +92,5 @@ router.post('/login', function (req, res) {
         return res.send({error: false, message: ' email or password error'})
     });
 });
-
 
 module.exports = router;
