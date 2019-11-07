@@ -12,6 +12,7 @@ var ordersRouter = require('./routes/orders');
 var order_detailsRouter = require('./routes/order_details');
 var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
+var adminsRouter = require("./routes/admins");
 var app = express();
 app.use(cors());
 // view engine setup
@@ -32,6 +33,7 @@ app.use('/orders',ordersRouter);
 app.use('/order_details',order_detailsRouter);
 app.use('/categories', categoriesRouter);
 app.use('/products', productsRouter);
+app.use('/admins', adminsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
