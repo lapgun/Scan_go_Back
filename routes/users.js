@@ -56,15 +56,15 @@ router.post('/', function (req, res) {
     });
 });
 router.put('/edit', function (req, res) {
-    let user_id = req.body.id;
     let user = req.body;
+    let user_id = req.body.id;
     user.password = passwordHash.generate(user.password);
-    if (!user_id || !user) {
+    if (!user) {
         return res.status(400).send({error: user, message: 'Please provide user and blog_id'});
     }
     db.User.update(user, {
         where: {
-            id: user_id
+            id : user_id
         }
     }).then(result => {
         return res.send({error: false, data: result, message: 'users list.'});
