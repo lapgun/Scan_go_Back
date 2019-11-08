@@ -1,6 +1,17 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
+var multer  = require('multer');
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'storage/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now()+'_'+ file.originalname)
+  }
+})
+
+var upload = multer({ storage: storage });
 
 /* GET Products listing. */
 router.get("/", function(req, res, next) {
@@ -15,9 +26,11 @@ router.get("/:id", function(req, res, next) {
 });
 
 // Post
-router.post("/", function(req, res, next) {
+router.post("/create",upload.single('picture'), function(req, res, next) {
   let form = req.body;
-  db.Products.create(form).then(res.send({ message: "create success" }));
+  return res.send(req.file);
+  // db.Products.create(form).then(res.send({ message: "create success" }));
+  // console.log(req.file);
 });
 
 //Update
