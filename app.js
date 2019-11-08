@@ -13,8 +13,10 @@ var order_detailsRouter = require("./routes/order_details");
 var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
 var adminsRouter = require("./routes/admins");
+var jwt = require('jsonwebtoken');
 var app = express();
 app.use(cors());
+
 // view engine setup
 app.use(cors());
 app.set("views", path.join(__dirname, "views"));
@@ -34,8 +36,44 @@ app.use("/orders", ordersRouter);
 app.use("/order_details", order_detailsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
-app.use("/admins", adminsRouter);
 
+//decode token
+var checkUserLogged = (req, res, next) => {
+  // check header or url parameters or post parameters for token
+  var token =
+    req.body.token ||
+    req.query.token ||
+    req.headers["x-access-token"] ||
+    req.headers["access-token"] ||
+    req.headers["token"] ||
+    req.header("token");
+  // decode token
+  if (token) {
+    // verifies secret and checks exp
+    jwt.verify(token, "qtahhnmsv", (err, decoded) => {
+      if (err) {
+        return res.json({
+          success: false,
+          message: "Failed to authenticate token.",
+          header: req.headers
+        });
+      } else {
+        // if everything is good, save to request for use in other routes
+        req.decoded = decoded;
+        next();
+      }
+    });
+  } else {
+    // if there is no token
+    // return an error
+    return res.status(403).send({
+      success: false,
+      message: "No token provided."
+    });
+  }
+};
+app.use(checkUserLogged);
+app.use("/admins", adminsRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
