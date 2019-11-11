@@ -1,3 +1,4 @@
+
 var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
@@ -15,16 +16,15 @@ var productsRouter = require("./routes/products");
 var adminsRouter = require("./routes/admins");
 var jwt = require('jsonwebtoken');
 var app = express();
-app.use(cors());
-
 // view engine setup
 app.use(cors());
-
-app.use(cors());
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use(express.static(path.join(__dirname, "storage")));
 app.use("/", indexRouter);
 
 app.use("/order_products", order_productsRouter);
@@ -34,21 +34,21 @@ app.use("/order_details", order_detailsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/admins",adminsRouter);
+
 //decode token
 var checkUserLogged = (req, res, next) => {
   // check header or url parameters or post parameters for token
   var token =
-  req.body.token ||
-  req.query.token ||
-  req.headers["x-access-token"] ||
-  req.headers["access-token"] ||
-  req.headers["token"] ||
-  req.header("token");
+    req.body.token ||
+    req.query.token ||
+    req.headers["x-access-token"] ||
+    req.headers["access-token"] ||
+    req.headers["token"] ||
+    req.header("token");
   // decode token
-   console.log('token:',token);
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, "verify token", (err, decoded) => {
+    jwt.verify(token, "qtahhnmsv", (err, decoded) => {
       if (err) {
         return res.json({
           success: false,
@@ -72,13 +72,8 @@ var checkUserLogged = (req, res, next) => {
 };
 app.use(checkUserLogged);
 app.use("/users", usersRouter);
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
 
 app.listen(4000, function() {
   console.log("Node app is running on port 4000");
 });
-
 module.exports = app;

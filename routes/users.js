@@ -51,7 +51,6 @@ router.get("/:id", function(req, res) {
   });
 });
 
-//Post
 router.post("/", function(req, res) {
   let user = req.body;
   user.password = passwordHash.generate(user.password);
