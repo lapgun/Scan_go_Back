@@ -4,7 +4,7 @@ var db = require("../models");
 var multer = require('multer');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'storage/')
+        cb(null, 'C:/Scan-go/client/client/static')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
@@ -28,7 +28,6 @@ router.get("/:id", function (req, res, next) {
 // Post
 router.post("/create", upload.single('picture'), function (req, res, next) {
     let form = req.body;
-
     form.picture = req.file.filename;
     db.Products.create(form).then(res.send({message: "create success"}));
     // // res.send(req.body);
