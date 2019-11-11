@@ -46,6 +46,7 @@ router.get("/:id", function(req, res) {
     return res.send({ error: false, data: result, message: "user" });
   });
 });
+
 router.post("/", function(req, res) {
   let user = req.body;
   user.password = passwordHash.generate(user.password);
