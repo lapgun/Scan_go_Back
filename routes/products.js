@@ -27,7 +27,8 @@ router.get("/:id", function(req, res, next) {
 
 // Post
 router.post("/create",upload.single('picture'), function(req, res, next) {
-  let form = req.body;
+  console.log(req.file);
+  console.log('sdsaasd'+ req.body)
   return res.send(req.file);
   // db.Products.create(form).then(res.send({ message: "create success" }));
   // console.log(req.file);
