@@ -40,23 +40,13 @@ app.use("/products", productsRouter);
 //decode token
 var checkUserLogged = (req, res, next) => {
   // check header or url parameters or post parameters for token
-  var token =
-    req.body.token ||
-    req.query.token ||
-    req.headers["x-access-token"] ||
-    req.headers["access-token"] ||
-    req.headers["token"] ||
-    req.header("token");
+  var token = req.body.token || req.query.token || req.headers['x-access-token'] || req.headers['access-token'] || req.header('token');
   // decode token
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, "qtahhnmsv", (err, decoded) => {
+    jwt.verify(token, 'qtahhnmsv', (err, decoded) => {
       if (err) {
-        return res.json({
-          success: false,
-          message: "Failed to authenticate token.",
-          header: req.headers
-        });
+        return res.json({ success: false, message: 'Failed to authenticate token.', header: req.headers });
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
@@ -68,18 +58,18 @@ var checkUserLogged = (req, res, next) => {
     // return an error
     return res.status(403).send({
       success: false,
-      message: "No token provided."
+      message: 'No token provided.'
     });
   }
 };
 app.use(checkUserLogged);
-app.use("/admins", adminsRouter);
+app.use('/admins', adminsRouter);
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
-app.listen(4000, function() {
+app.listen(4000, function () {
   console.log("Node app is running on port 4000");
 });
 

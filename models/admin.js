@@ -20,15 +20,15 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue : true,
       }
     },
-    {
-      validate : {
-        bothCoordsOrNone: function() {
-          if ((this.name === null) !== (this.email === null) !==(this.password)) {
-            throw new Error('Require name or email or password')
-          }
-        }
-      }
-    }
+    // {
+    //   validate : {
+    //     bothCoordsOrNone: function() {
+    //       if ((this.name === null) !== (this.email === null) !==(this.password)) {
+    //         throw new Error('Require name or email or password')
+    //       }
+    //     }
+    //   }
+    // }
   );
   Admin.associate = function(models) {
     // associations can be defined here

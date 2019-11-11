@@ -89,7 +89,7 @@ router.post("/login", function(req, res) {
     }
   }).then(result => {
     if (result) {
-      let token = jwt.sign({ user_id: result.id }, "shhhhh");
+      let token = jwt.sign({ user_id: result.id }, "qtahhnmsv");
       return res.send({
         check: passwordHash.verify(password, result.password),
         data: result,

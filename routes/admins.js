@@ -6,14 +6,16 @@ var jwt = require('jsonwebtoken');
 const Op = db.Sequelize.Op;
 router.get("/", function (req, res) {
   let search = req.query.search;
-  let decoded=req.decoded;
+  let decoded= req.decoded;
   let currentPage = req.query.page ? parseInt(req.query.page) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
+  // return console.log(decoded);
   db.Admin.findAndCountAll({
     where: {
       name: {
         [Op.substring]: "%" + search + "%"
-      }
+      },
+      id : decoded.admin_id
     },
     limit: perPage,
     offset: (currentPage - 1) * perPage
@@ -91,7 +93,6 @@ router.post('/login', function (req, res) {
       email: email
     }
   }).then(result => {
-
     if (result) {
       if (passwordHash.verify(req.body.password, result.password)) {
         let token = jwt.sign({ admin_id: result.id }, 'qtahhnmsv');
