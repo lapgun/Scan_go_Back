@@ -19,38 +19,36 @@ app.use(cors());
 
 // view engine setup
 app.use(cors());
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
+
 app.use(cors());
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+
 app.use("/order_products", order_productsRouter);
 app.use("/order_statuses", order_statusesRouter);
 app.use("/orders", ordersRouter);
 app.use("/order_details", order_detailsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
-
+app.use("/admins",adminsRouter);
 //decode token
 var checkUserLogged = (req, res, next) => {
   // check header or url parameters or post parameters for token
   var token =
-    req.body.token ||
-    req.query.token ||
-    req.headers["x-access-token"] ||
-    req.headers["access-token"] ||
-    req.headers["token"] ||
-    req.header("token");
+  req.body.token ||
+  req.query.token ||
+  req.headers["x-access-token"] ||
+  req.headers["access-token"] ||
+  req.headers["token"] ||
+  req.header("token");
   // decode token
+   console.log('token:',token);
   if (token) {
     // verifies secret and checks exp
-    jwt.verify(token, "qtahhnmsv", (err, decoded) => {
+    jwt.verify(token, "verify token", (err, decoded) => {
       if (err) {
         return res.json({
           success: false,
@@ -73,7 +71,7 @@ var checkUserLogged = (req, res, next) => {
   }
 };
 app.use(checkUserLogged);
-app.use("/admins", adminsRouter);
+app.use("/users", usersRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
