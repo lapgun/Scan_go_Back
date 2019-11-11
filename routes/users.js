@@ -4,6 +4,8 @@ var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
 const Op = db.Sequelize.Op;
+
+// Get all
 router.get("/", function(req, res) {
   let search = req.query.search;
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
@@ -35,6 +37,8 @@ router.get("/", function(req, res) {
     });
   });
 });
+
+//Get by Id
 router.get("/:id", function(req, res) {
   let user_id = req.params.id;
   if (!user_id) {
@@ -59,6 +63,8 @@ router.post("/", function(req, res) {
     return res.send({ error: false, data: result, message: "users list." });
   });
 });
+
+//Update
 router.put("/edit", function(req, res) {
   let user_id = req.body.id;
   let user = req.body;
@@ -76,6 +82,9 @@ router.put("/edit", function(req, res) {
     return res.send({ error: false, data: result, message: "users list." });
   });
 });
+
+
+// Login
 router.post("/login", function(req, res) {
   let email = req.body.email;
   let password = req.body.password;
