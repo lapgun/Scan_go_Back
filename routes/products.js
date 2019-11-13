@@ -30,8 +30,9 @@ router.get("/:id", function (req, res, next) {
 // Post
 router.post("/create", upload.single('picture'), function (req, res, next) {
     let form = req.body;
-    form.picture = req.file.filename;
-    db.Products.create(form).then(res.send({message: "create success"}));
+    db.Products.create(form, {
+        include : "gallery"
+    }).then(res.send({message: "create success"}));
     // // res.send(req.body);
     //  console.log(req.body);
     //  console.log(req.file);
