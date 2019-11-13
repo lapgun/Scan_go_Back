@@ -4,37 +4,43 @@ var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
 const Op = db.Sequelize.Op;
+
+// Get all
 router.get("/", function(req, res) {
   let search = req.query.search;
+  let decoded = req.decoded;
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 2;
-  let where = {};
-  if (search) {
-    where = {
-      name: {
-        [Op.substring]: "%" + search + "%"
-      }
-    };
-  }
-  db.User.findAndCountAll({
-    where: where,
-    limit: perPage,
-    offset: (currentPage - 1) * perPage
-  }).then(results => {
-    let count = results.count;
-    let data = results.rows;
-    let total_page = Math.ceil(count / perPage);
-    res.send({
-      data: data,
-      pagination: {
-        total: count,
-        totalPage: total_page,
-        perPage: perPage,
-        currentPage: currentPage
-      }
+
+    db.User.findAndCountAll(
+    //   {
+    //   where: {
+    //     name: {
+    //       [Op.substring]: "%" + search + "%"
+    //     },
+    //         
+    //   },
+    //   limit: perPage,
+    //   offset: (currentPage - 1) * perPage
+    // }
+    ).then(results => {
+      let total = results.count;
+      let data = results.rows;
+      let totalPage = Math.ceil(total / perPage);
+      res.send({
+        data,
+        decoded,
+        pagination: {
+          total,
+          perPage,
+          currentPage,
+          totalPage
+        }
+      });
     });
-  });
 });
+
+//Get by Id
 router.get("/:id", function(req, res) {
   let user_id = req.params.id;
   if (!user_id) {
@@ -59,6 +65,8 @@ router.post("/", function(req, res) {
     return res.send({ error: false, data: result, message: "users list." });
   });
 });
+
+//Update
 router.put("/edit", function(req, res) {
   let user_id = req.body.id;
   let user = req.body;
@@ -76,28 +84,25 @@ router.put("/edit", function(req, res) {
     return res.send({ error: false, data: result, message: "users list." });
   });
 });
-router.post("/login", function(req, res) {
-  let email = req.body.email;
-  let password = req.body.password;
-  if (!email || !password) {
-    return res
-      .status(400)
-      .send({ error: true, message: "please provide blog_id" });
-  }
-  db.User.findOne({
-    where: {
-      email: email
-    }
-  }).then(result => {
-    if (result) {
-      let token = jwt.sign({ user_id: result.id }, "qtahhnmsv");
-      return res.send({
-        check: passwordHash.verify(password, result.password),
-        data: result,
-        token: token
-      });
-    }
-    return res.send({ error: false, message: " email or password error" });
-  });
-});
+
+
+// // Login
+// router.post('/login', function(req,res){
+
+//   let email = req.body.email;
+//   db.User.findOne({
+//     where : {
+//       email : email
+//     }
+//   }).then(result => {
+      
+//     if(result) {
+//       if(passwordHash.verify(req.body.password, result.password)) {
+//         let token = jwt.sign({ user_id: result.id }, 'qtahhnmsv');
+//         return res.send({data:result, token:token});
+//       }
+//     }
+//       return res.send({ error: false, data: result, message: 'No email.' });
+//   })
+// });
 module.exports = router;

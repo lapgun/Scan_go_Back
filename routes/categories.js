@@ -1,12 +1,37 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
-
+const Op = db.Sequelize.Op;
 /* GET categories listing. */
 router.get("/", function(req, res, next) {
-  db.Categories.findAll().then(results => res.send({ data: results }));
+  let search = req.query.search;
+  db.Categories.findAndCountAll({
+    where : {
+      name : {
+        [Op.substring]: "%" + search + "%"
+      }
+    }
+  }).then(results => res.send({ data: results }));
+});
+// Get categories parent
+router.get("/cat_parent",function(req,res,next){
+  db.Categories.findAndCountAll({
+    where:{
+      cat_parent : 0
+    }
+  }).then(results => res.send({data:results}))
 });
 
+// Get cat products
+router.get("/cat_product",function(req,res,next){
+  db.Categories.findAndCountAll({
+    where:{
+      cat_parent : {
+        [Op.ne]: 0
+      }
+    }
+  }).then(results => res.send({data:results}))
+});
 // Get by id
 router.get("/:id", function(req, res, next) {
   db.Categories.findByPk(req.params.id).then(results =>

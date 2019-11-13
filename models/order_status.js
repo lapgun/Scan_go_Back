@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Order_status.associate = function(models) {
-    // associations can be defined here
+    //Order_status.belongsTo(models.Orders, {foreignKey: 'orderId', target: 'id', as:'order'})
   };
   return Order_status;
 };
