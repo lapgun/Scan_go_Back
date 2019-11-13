@@ -9,7 +9,7 @@ var storage = multer.diskStorage({
     filename: function (req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
     }
-})
+});
 
 var upload = multer({storage: storage});
 
@@ -20,7 +20,9 @@ router.get("/", function (req, res, next) {
 
 // Get by id
 router.get("/:id", function (req, res, next) {
-    db.Products.findByPk(req.params.id).then(results =>
+    db.Products.findByPk(req.params.id , {
+        include : "product"
+    }).then(results =>
         res.send({data: results})
     );
 });
