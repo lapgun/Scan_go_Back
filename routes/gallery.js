@@ -16,13 +16,18 @@ router.post("/upload", upload.array('files', 12), function (req, res, next) {
     let form = [];
     for (let i = 0; i < req.files.length; i++) {
         form.push({
-                nameImg: req.files[i].filename,
-                local: req.files[i].path
+                name: req.files[i].filename,
             }
         );
     }
-    db.gallery_products.bulkCreate(form).then(result =>{
-        res.send({data : result , msg : "oke"});
+    db.Gallery.bulkCreate(form).then( result => {
+        res.send({ data : result, msg : "oke"})
     });
+});
+router.get("/",function (req,res) {
+    db.Gallery.findAll()
+        .then(result =>{
+            res.send({data : result, msg : "list img"});
+        });
 });
 module.exports = router;

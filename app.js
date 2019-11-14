@@ -14,7 +14,7 @@ var order_detailsRouter = require("./routes/order_details");
 var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
 var adminsRouter = require("./routes/admins");
-var gallery_productsRouter = require("./routes/gallery_products");
+var galleryRouter = require("./routes/gallery");
 var jwt = require('jsonwebtoken');
 var app = express();
 // view engine setup
@@ -38,7 +38,7 @@ app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/admins",adminsRouter);
 app.use("/users", usersRouter);
-app.use("/gallery_products", gallery_productsRouter);
+app.use("/gallery",galleryRouter);
 // decode token
 var checkUserLogged = (req, res, next) => {
   // check header or url parameters or post parameters for token

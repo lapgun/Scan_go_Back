@@ -38,12 +38,10 @@ router.get("/:id", function(req, res) {
 
 router.post("/", function(req, res) {
   let order_detail = req.body;
-
   db.Order_details.create(order_detail).then(result => {
     return res.send(result);
   });
 });
-
 router.put("/:id", function(req, res) {
   let order_detail_id = req.body.id;
   let order_detail = req.body;

@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     order_time: DataTypes.INTEGER
   }, {});
   Product.associate = function(models) {
-    Product.hasMany(models.gallery_products,{foreignKey: 'productId', targetKey: 'id', as:'product'})
+
   };
   return Product;
 };
