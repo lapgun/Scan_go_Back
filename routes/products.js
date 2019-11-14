@@ -14,30 +14,29 @@ var storage = multer.diskStorage({
 var upload = multer({storage: storage});
 
 /* GET Products listing. */
+
 router.get("/", function (req, res, next) {
     db.Products.findAll().then(results => res.send({data: results}));
 });
 
 // Get by id
 router.get("/:id", function (req, res, next) {
-    db.Products.findByPk(req.params.id , {
-        include : "product"
-    }).then(results =>
+    db.Products.findByPk(req.params.id ,
+).then(results =>
         res.send({data: results})
     );
 });
 
 // Post
-router.post("/create", upload.single('picture'), function (req, res, next) {
+router.post("/", function (req, res) {
     let form = req.body;
-    db.Products.create(form, {
-        include : "gallery"
-    }).then(res.send({message: "create success"}));
-    // // res.send(req.body);
-    //  console.log(req.body);
-    //  console.log(req.file);
+    if (!form){
+        res.send("form exits");
+    }
+    db.Products.create(form).then(result =>{
+        res.send({data : result , msg : "thanh cong"})
+    });
 });
-
 //Update
 
 router.put("/:id", function (req, res, next) {

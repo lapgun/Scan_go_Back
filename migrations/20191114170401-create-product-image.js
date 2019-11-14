@@ -1,23 +1,31 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('gallery_products', {
+    return queryInterface.createTable('product_images', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nameImg: {
+      image_1: {
         type: Sequelize.STRING
       },
-      productId: {
+      image_2: {
         type: Sequelize.STRING
       },
-      local :{
-        type :Sequelize.STRING
+      image_3: {
+        type: Sequelize.STRING
       },
-
+      image_4: {
+        type: Sequelize.STRING
+      },
+      image_5: {
+        type: Sequelize.STRING
+      },
+      default_image: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -29,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('gallery_products');
+    return queryInterface.dropTable('product_images');
   }
 };
