@@ -31,7 +31,11 @@ router.get("/", function(req, res) {
 });
 
 router.get("/:id", function(req, res) {
-  db.Orders.findByPk(req.params.id).then(result => {
+  db.Orders.findByPk(req.params.id,{
+    include : 'order_products',
+    // include : 'order_statuses',
+    // include : 'order_detail'
+  }).then(result => {
     return res.send(result);
   });
 });

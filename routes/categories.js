@@ -4,7 +4,14 @@ var db = require("../models");
 const Op = db.Sequelize.Op;
 /* GET categories listing. */
 router.get("/", function(req, res, next) {
-  db.Categories.findAll().then(results => res.send({ data: results }));
+  let search = req.query.search;
+  db.Categories.findAndCountAll({
+    where : {
+      name : {
+        [Op.substring]: "%" + search + "%"
+      }
+    }
+  }).then(results => res.send({ data: results }));
 });
 // Get categories parent
 router.get("/cat_parent",function(req,res,next){
