@@ -7,7 +7,6 @@ const Op = db.Sequelize.Op;
 
 // Get all
 router.get("/", function(req, res) {
-  let search = req.query.search;
   let decoded = req.decoded;
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 2;
@@ -43,14 +42,17 @@ router.get("/", function(req, res) {
 //Get by Id
 router.get("/:id", function(req, res) {
   let user_id = req.params.id;
+  let decoded = req.decoded;
   if (!user_id) {
     return res
       .status(400)
       .send({ error: true, message: "please provide user" });
   }
-  db.User.findByPk(user_id).then(result => {
-    return res.send({ error: false, data: result, message: "user" });
-  });
+  if(decoded){
+    db.User.findByPk(user_id).then(result => {
+      return res.send({ error: false, data: result, message: "user" });
+    });
+  }
 });
 
 router.post("/", function(req, res) {
@@ -67,7 +69,7 @@ router.post("/", function(req, res) {
 });
 
 //Update
-router.put("/edit", function(req, res) {
+router.put("/:id", function(req, res) {
   let user_id = req.body.id;
   let user = req.body;
   user.password = passwordHash.generate(user.password);
@@ -85,6 +87,12 @@ router.put("/edit", function(req, res) {
   });
 });
 
+router.delete("/:id", function(req, res, next) {
+  let id = req.params.id;
+  db.User.destroy({ where: { id: id } }).then(
+    res.send({ message: "delete success" })
+  );
+});
 
 // // Login
 // router.post('/login', function(req,res){
