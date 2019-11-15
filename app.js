@@ -13,7 +13,7 @@ var ordersRouter = require("./routes/orders");
 var order_detailsRouter = require("./routes/order_details");
 var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
-var adminsRouter = require("./routes/admins");
+var galleryRouter = require("./routes/product_image");
 var jwt = require('jsonwebtoken');
 var app = express();
 // view engine setup
@@ -26,16 +26,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "storage")));
 app.use("/", indexRouter);
-
 app.use("/order_products", order_productsRouter);
 app.use("/order_statuses", order_statusesRouter);
 app.use("/orders", ordersRouter);
 app.use("/order_details", order_detailsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
-app.use("/admins",adminsRouter);
-
-//decode token
+app.use("/users", usersRouter);
+app.use("/gallery",galleryRouter);
+// decode token
 var checkUserLogged = (req, res, next) => {
   // check header or url parameters or post parameters for token
   var token =
@@ -50,30 +49,27 @@ var checkUserLogged = (req, res, next) => {
     // verifies secret and checks exp
     jwt.verify(token, "qtahhnmsv", (err, decoded) => {
       if (err) {
-        return res.json({
-          success: false,
-          message: "Failed to authenticate token.",
-          header: req.headers
-        });
+          return res.json({ success: false, message: 'Failed to authenticate token.', header : req.headers });       
       } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;
-        next();
+          // if everything is good, save to request for use in other routes
+          req.decoded = decoded;         
+          next();
       }
-    });
-  } else {
-    // if there is no token
-    // return an error
-    return res.status(403).send({
-      success: false,
-      message: "No token provided."
-    });
-  }
+  });
+} else {
+  // if there is no token
+  // return an error
+  return res.status(403).send({ 
+      success: false, 
+      message: 'No token provided.' 
+  });
+}
 };
 //app.use(checkUserLogged);
 app.use("/users", usersRouter);
 
-app.listen(4000, function() {
+
+app.listen(4000, function () {
   console.log("Node app is running on port 4000");
 });
 module.exports = app;
