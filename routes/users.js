@@ -94,23 +94,4 @@ router.delete("/:id", function(req, res, next) {
   );
 });
 
-// // Login
-// router.post('/login', function(req,res){
-
-//   let email = req.body.email;
-//   db.User.findOne({
-//     where : {
-//       email : email
-//     }
-//   }).then(result => {
-      
-//     if(result) {
-//       if(passwordHash.verify(req.body.password, result.password)) {
-//         let token = jwt.sign({ user_id: result.id }, 'qtahhnmsv');
-//         return res.send({data:result, token:token});
-//       }
-//     }
-//       return res.send({ error: false, data: result, message: 'No email.' });
-//   })
-// });
 module.exports = router;

@@ -32,4 +32,36 @@ router.post('/login', function (req, res) {
     }
   })
 });
+
+//register
+
+router.post("/register", function(req, res) {
+  let user = req.body;
+  user.password = passwordHash.generate(user.password);
+  if (!user) {
+    return res
+      .status(400)
+      .send({ error: true, message: "Please provide blog" });
+  }
+  db.User.findOne({
+    where: {
+      email: user.email
+    }
+  }).then(exist => {
+    if (exist) {
+      return res.send({
+        error: true,
+        message: " Email existed, please try another one"
+      });
+    } else {
+      db.User.create(user).then(result => {
+        return res.send({
+          error: false,
+          data: result,
+          message: "Registion success"
+        });
+      });
+    }
+  });
+});
 module.exports = router;
