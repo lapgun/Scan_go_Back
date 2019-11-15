@@ -4,37 +4,42 @@ var db = require("../models");
 var multer = require('multer');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'C:/Users/User/Scan_go/Frontend/Scan-Go-FrontEnd/static')
+        cb(null, 'C:/Scan-go/client/client/static')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
     }
-})
+});
 
 var upload = multer({storage: storage});
 
-/* GET Products listing. */
 router.get("/", function (req, res, next) {
-    db.Products.findAll().then(results => res.send({data: results}));
+    db.Products.findAll(
+        {
+            include : "images"
+        }
+    ).then(results => res.send({data: results}));
 });
 
 // Get by id
 router.get("/:id", function (req, res, next) {
-    db.Products.findByPk(req.params.id).then(results =>
-        res.send({data: results})
+    db.Products.findByPk(req.params.id , {
+        include : "images"
+    })
+        .then(results => res.send({data: results})
     );
 });
 
 // Post
-router.post("/create", upload.single('picture'), function (req, res, next) {
+router.post("/", function (req, res) {
     let form = req.body;
-    form.picture = req.file.filename;
-    db.Products.create(form).then(res.send({message: "create success"}));
-    // // res.send(req.body);
-    //  console.log(req.body);
-    //  console.log(req.file);
+    if (!form) {
+        res.send("form exits");
+    }
+    db.Products.create(form).then(result => {
+        res.send({data: result, msg: "thanh cong"})
+    });
 });
-
 //Update
 
 router.put("/:id", function (req, res, next) {
