@@ -7,48 +7,52 @@ const Op = db.Sequelize.Op;
 
 // Get all
 router.get("/", function(req, res) {
-  let search = req.query.search;
+  let decoded = req.decoded;
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 2;
-  let where = {};
-  if (search) {
-    where = {
-      name: {
-        [Op.substring]: "%" + search + "%"
-      }
-    };
-  }
-  db.User.findAndCountAll({
-    where: where,
-    limit: perPage,
-    offset: (currentPage - 1) * perPage
-  }).then(results => {
-    let count = results.count;
-    let data = results.rows;
-    let total_page = Math.ceil(count / perPage);
-    res.send({
-      data: data,
-      pagination: {
-        total: count,
-        totalPage: total_page,
-        perPage: perPage,
-        currentPage: currentPage
-      }
+
+    db.User.findAndCountAll(
+    //   {
+    //   where: {
+    //     name: {
+    //       [Op.substring]: "%" + search + "%"
+    //     },
+    //         
+    //   },
+    //   limit: perPage,
+    //   offset: (currentPage - 1) * perPage
+    // }
+    ).then(results => {
+      let total = results.count;
+      let data = results.rows;
+      let totalPage = Math.ceil(total / perPage);
+      res.send({
+        data,
+        decoded,
+        pagination: {
+          total,
+          perPage,
+          currentPage,
+          totalPage
+        }
+      });
     });
-  });
 });
 
 //Get by Id
 router.get("/:id", function(req, res) {
   let user_id = req.params.id;
+  let decoded = req.decoded;
   if (!user_id) {
     return res
       .status(400)
       .send({ error: true, message: "please provide user" });
   }
-  db.User.findByPk(user_id).then(result => {
-    return res.send({ error: false, data: result, message: "user" });
-  });
+  if(decoded){
+    db.User.findByPk(user_id).then(result => {
+      return res.send({ error: false, data: result, message: "user" });
+    });
+  }
 });
 
 router.post("/", function(req, res) {
@@ -65,7 +69,7 @@ router.post("/", function(req, res) {
 });
 
 //Update
-router.put("/edit", function(req, res) {
+router.put("/:id", function(req, res) {
   let user_id = req.body.id;
   let user = req.body;
   user.password = passwordHash.generate(user.password);
@@ -83,30 +87,24 @@ router.put("/edit", function(req, res) {
   });
 });
 
-
-// Login
-router.post("/login", function(req, res) {
-  let email = req.body.email;
-  let password = req.body.password;
-  if (!email || !password) {
-    return res
-      .status(400)
-      .send({ error: true, message: "please provide blog_id" });
-  }
-  db.User.findOne({
-    where: {
-      email: email
-    }
-  }).then(result => {
-    if (result) {
-      let token = jwt.sign({ user_id: result.id }, "shhhhh");
-      return res.send({
-        check: passwordHash.verify(password, result.password),
-        data: result,
-        token: token
-      });
-    }
-    return res.send({ error: false, message: " email or password error" });
-  });
+//delete
+router.delete("/:id", function (req, res, next) {
+  let user_id = req.decoded.user_id
+  db.User.findByPk(req.params.id).then(
+   result => {
+     console.log(result.dataValues.id)
+     console.log(user_id)
+     if(result.dataValues.id == user_id){
+      db.User.destroy({where: {id: req.params.id}}).then( 
+        result =>{
+           return  res.send({error: false, message: "delete success"})
+        }
+      )
+     }else{
+        return res.send({error:true, message:"Not allow"})
+     }
+   }
+  )
 });
+
 module.exports = router;
