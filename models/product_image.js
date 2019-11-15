@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     default_image: DataTypes.STRING
   }, {});
   product_image.associate = function(models) {
-    // associations can be defined here
+    // product_image.hasOne(models.Product,{foreignKey:'picture', sourceKey:'id', as :"image"})
   };
   return product_image;
 };

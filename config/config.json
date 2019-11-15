@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "root",
-    "password": "123456@Abc",
+    "password": null,
     "database": "scan_go",
     "host": "localhost",
     "dialect": "mysql"

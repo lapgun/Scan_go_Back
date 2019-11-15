@@ -4,7 +4,7 @@ var db = require("../models");
 var multer = require('multer');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/home/lapgun/Desktop/scan_go/frontend/Scan-Go-FrontEnd/static')
+        cb(null, 'C:/Scan-go/client/client/static')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
@@ -15,7 +15,7 @@ var upload = multer({storage: storage});
 router.post("/upload", upload.array('files', 12), function (req, res, next) {
     if (req.files.length) {
         const columnPrefixName = 'image_'
-        const dataInsert = {}
+        const dataInsert = {};
 
         //prepare data to insert
         dataInsert.default_image = req.files[0].filename
@@ -32,7 +32,14 @@ router.post("/upload", upload.array('files', 12), function (req, res, next) {
     }
 });
 router.get("/",function (req,res) {
-    db.product_image.findByPk(req.params.id)
+    db.product_image.findAll()
+        .then(result =>{
+            res.send({data : result, msg : "list img"});
+        });
+});
+router.get("/:id",function (req,res) {
+    let picture_id = req.params.id;
+    db.product_image.findByPk(picture_id)
         .then(result =>{
             res.send({data : result, msg : "list img"});
         });

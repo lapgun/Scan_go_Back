@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     order_time: DataTypes.INTEGER
   }, {});
   Product.associate = function(models) {
+    Product.belongsTo(models.product_image,{foreignKey:'picture', sourceKey:'id', as :"images"})
   };
   return Product;
 };
