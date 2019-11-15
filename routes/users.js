@@ -87,30 +87,24 @@ router.put("/:id", function(req, res) {
   });
 });
 
-router.delete("/:id", function(req, res, next) {
-  let id = req.params.id;
-  db.User.destroy({ where: { id: id } }).then(
-    res.send({ message: "delete success" })
-  );
+//delete
+router.delete("/:id", function (req, res, next) {
+  let user_id = req.decoded.user_id
+  db.User.findByPk(req.params.id).then(
+   result => {
+     console.log(result.dataValues.id)
+     console.log(user_id)
+     if(result.dataValues.id == user_id){
+      db.User.destroy({where: {id: req.params.id}}).then( 
+        result =>{
+           return  res.send({error: false, message: "delete success"})
+        }
+      )
+     }else{
+        return res.send({error:true, message:"Not allow"})
+     }
+   }
+  )
 });
 
-// // Login
-// router.post('/login', function(req,res){
-
-//   let email = req.body.email;
-//   db.User.findOne({
-//     where : {
-//       email : email
-//     }
-//   }).then(result => {
-      
-//     if(result) {
-//       if(passwordHash.verify(req.body.password, result.password)) {
-//         let token = jwt.sign({ user_id: result.id }, 'qtahhnmsv');
-//         return res.send({data:result, token:token});
-//       }
-//     }
-//       return res.send({ error: false, data: result, message: 'No email.' });
-//   })
-// });
 module.exports = router;
