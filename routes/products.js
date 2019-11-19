@@ -1,18 +1,6 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
-var multer = require('multer');
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'C:/Scan-go/client/client/static')
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '_' + file.originalname)
-    }
-});
-
-var upload = multer({storage: storage});
-
 router.get("/", function (req, res, next) {
     db.Products.findAll(
         {
