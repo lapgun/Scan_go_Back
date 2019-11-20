@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var db = require("../models");
 var multer = require('multer');
+const Op = db.Sequelize.Op;
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, 'C:/Users/User/Scan_go/Frontend/Scan-Go-FrontEnd/static')
@@ -15,19 +16,49 @@ var upload = multer({ storage: storage });
 
 router.get("/", function(req, res, next) {
     db.Products.findAll({
-        include: "images"
+        include: "images",
+        // include: "category",
     }).then(results => res.send({ data: results }));
 });
 
 // Get by id
 router.get("/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
-            include: "images"
+            include: "images",
+            // include: "category",
         })
         .then(results => res.send({ data: results }));
 });
 
-// Post
+//get by cat_parent
+router.post("/by_cat", function(req, res, next) {
+    let menu = req.body;
+    console.log('hellosdưdefefef',menu)
+    // db.Products.findAndCountAll({
+    //     where: {
+    //         categoriesId: {
+    //             [Op.or]: {
+
+    //             }
+    //         }
+    //     }
+    // }).then()
+});
+
+// get by category
+router.get('/menu/:id', function(req, res, next) {
+        let id = req.params.id
+        db.Products.findAndCountAll({
+            where: {
+                categoriesId: id
+            },
+            include: 'images'
+        }).then(results => {
+            let data = results.rows
+            res.send({ data })
+        })
+    })
+    // Post
 router.post("/", function(req, res) {
     let form = req.body;
     if (!form) {
