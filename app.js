@@ -32,7 +32,6 @@ app.use("/orders", ordersRouter);
 app.use("/order_details", order_detailsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
-app.use("/users", usersRouter);
 app.use("/gallery",galleryRouter);
 // decode token
 var checkUserLogged = (req, res, next) => {
