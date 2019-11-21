@@ -17,48 +17,71 @@ var upload = multer({ storage: storage });
 router.get("/", function(req, res, next) {
     db.Products.findAll({
         include: "images",
-        // include: "category",
     }).then(results => res.send({ data: results }));
 });
+//search
+router.get("/search", function(req, res, next) {
+    db.Products.findAll({
+        where: {
+            name: {
+                [Op.substring]: req.query.search
+            }
+        },
+        include: "images",
+    }).then(results => res.send({ data: results }));
+});
+// get orderby id 
+router.get('/newest', function(req, res, next) {
+    db.Products.findAndCountAll({
+        order: [
+            ['id', 'DESC']
+        ],
+        limit: 6,
+        include: 'images'
+    }).then(results => {
+        let data = results.rows
+        res.send({ data })
+    })
+})
+
+// get orderby order_time
+router.get('/order_time', function(req, res, next) {
+    db.Products.findAndCountAll({
+        order: [
+            ['order_time', 'DESC']
+        ],
+        limit: 6,
+        include: 'images'
+    }).then(results => {
+        let data = results.rows
+        res.send({ data })
+    })
+})
+
+router.get('/menu/:id', function(req, res, next) {
+    let id = req.params.id
+    db.Products.findAndCountAll({
+        where: {
+            categoriesId: id
+        },
+        include: 'images'
+    }).then(results => {
+        let data = results.rows
+        res.send({ data })
+    })
+})
+
 
 // Get by id
 router.get("/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
             include: "images",
-            // include: "category",
         })
         .then(results => res.send({ data: results }));
 });
-
-//get by cat_parent
-router.post("/by_cat", function(req, res, next) {
-    let menu = req.body;
-    console.log('hellosdưdefefef',menu)
-    // db.Products.findAndCountAll({
-    //     where: {
-    //         categoriesId: {
-    //             [Op.or]: {
-
-    //             }
-    //         }
-    //     }
-    // }).then()
-});
-
 // get by category
-router.get('/menu/:id', function(req, res, next) {
-        let id = req.params.id
-        db.Products.findAndCountAll({
-            where: {
-                categoriesId: id
-            },
-            include: 'images'
-        }).then(results => {
-            let data = results.rows
-            res.send({ data })
-        })
-    })
-    // Post
+
+// Post
 router.post("/", function(req, res) {
     let form = req.body;
     if (!form) {

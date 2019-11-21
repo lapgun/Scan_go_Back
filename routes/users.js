@@ -11,18 +11,7 @@ router.get("/", function(req, res) {
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 2;
 
-    db.User.findAndCountAll(
-        //   {
-        //   where: {
-        //     name: {
-        //       [Op.substring]: "%" + search + "%"
-        //     },
-        //         
-        //   },
-        //   limit: perPage,
-        //   offset: (currentPage - 1) * perPage
-        // }
-    ).then(results => {
+    db.User.findAndCountAll().then(results => {
         let total = results.count;
         let data = results.rows;
         let totalPage = Math.ceil(total / perPage);

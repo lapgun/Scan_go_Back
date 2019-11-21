@@ -27,7 +27,8 @@ router.get("/cat_parent/:id", function(req, res, next) {
     db.Categories.findAndCountAll({
         where: {
             cat_parent: key
-        }
+        },
+        include: 'products'
     }).then(results => {
         res.send({ data: results });
     })
@@ -40,8 +41,7 @@ router.get("/cat_product", function(req, res, next) {
             cat_parent: {
                 [Op.ne]: 0
             }
-        },
-        include: 'products'
+        }
     }).then(results => res.send({ data: results }))
 });
 // Get by id
@@ -54,8 +54,7 @@ router.get("/:id", function(req, res, next) {
 // Post
 router.post("/", function(req, res, next) {
     let form = req.body;
-    return console.log(form)
-    // db.Categories.create(form).then(res.send({ message: "create success" }));
+    db.Categories.create(form).then(res.send({ message: "create success" }));
 });
 
 //Update
