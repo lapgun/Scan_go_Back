@@ -63,38 +63,67 @@ router.get("/search",function(req,res,next){
 
 // Get by id
 router.get("/:id", function(req, res, next) {
-  db.Products.findByPk(req.params.id, {
-    include: "images"
-  }).then(results => res.send({ data: results }));
+    db.Products.findByPk(req.params.id, {
+            include: "images",
+            // include: "category",
+        })
+        .then(results => res.send({ data: results }));
 });
 
-// Post
+//get by cat_parent
+router.post("/by_cat", function(req, res, next) {
+    let menu = req.body;
+    console.log('hellosdưdefefef',menu)
+    // db.Products.findAndCountAll({
+    //     where: {
+    //         categoriesId: {
+    //             [Op.or]: {
+
+    //             }
+    //         }
+    //     }
+    // }).then()
+});
+
+// get by category
+router.get('/menu/:id', function(req, res, next) {
+        let id = req.params.id
+        db.Products.findAndCountAll({
+            where: {
+                categoriesId: id
+            },
+            include: 'images'
+        }).then(results => {
+            let data = results.rows
+            res.send({ data })
+        })
+    })
+    // Post
 router.post("/", function(req, res) {
-  let form = req.body;
-  if (!form) {
-    res.send("form exits");
-  }
-  db.Products.create(form).then(result => {
-    res.send({ data: result, msg: "thanh cong" });
-  });
+    let form = req.body;
+    if (!form) {
+        res.send("form exits");
+    }
+    db.Products.create(form).then(result => {
+        res.send({ data: result, msg: "thanh cong" })
+    });
 });
 
 //Update
 
 router.put("/:id", function(req, res, next) {
-  let form = req.body;
-  db.Products.update(form, {
-    where: {
-      id: req.params.id
-    }
-  }).then(res.send({ message: "update success" }));
+    let form = req.body;
+    db.Products.update(form, {
+        where: {
+            id: req.params.id
+        }
+    }).then(res.send({ message: "update success" }));
 });
 
 //Delete
-
 router.delete("/:id", function(req, res, next) {
-  db.Products.destroy({ where: { id: req.params.id } }).then(
-    res.send({ message: "delete success" })
-  );
+    db.Products.destroy({ where: { id: req.params.id } }).then(
+        res.send({ message: "delete success" })
+    );
 });
 module.exports = router;
