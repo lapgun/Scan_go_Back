@@ -3,16 +3,16 @@ var router = express.Router();
 var db = require("../models");
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'C:/Scan-go/client/client/static')
+    destination: function(req, file, cb) {
+        cb(null, 'C:/Users/Admin/Scan_go/Scan-Go-FrontEnd/static')
     },
-    filename: function (req, file, cb) {
+    filename: function(req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
     }
 });
-var upload = multer({storage: storage});
+var upload = multer({ storage: storage });
 
-router.post("/upload", upload.array('files', 12), function (req, res, next) {
+router.post("/upload", upload.array('files', 12), function(req, res, next) {
     if (req.files.length) {
         const columnPrefixName = 'image_'
         const dataInsert = {};
@@ -26,22 +26,22 @@ router.post("/upload", upload.array('files', 12), function (req, res, next) {
 
         // Insert to db
         db.product_image.bulkCreate([dataInsert])
-        .then( result => {
-            res.send({ data : result[0], msg : "success"})
-        });
+            .then(result => {
+                res.send({ data: result[0], msg: "success" })
+            });
     }
 });
-router.get("/",function (req,res) {
+router.get("/", function(req, res) {
     db.product_image.findAll()
-        .then(result =>{
-            res.send({data : result, msg : "list img"});
+        .then(result => {
+            res.send({ data: result, msg: "list img" });
         });
 });
-router.get("/:id",function (req,res) {
+router.get("/:id", function(req, res) {
     let picture_id = req.params.id;
     db.product_image.findByPk(picture_id)
-        .then(result =>{
-            res.send({data : result, msg : "list img"});
+        .then(result => {
+            res.send({ data: result, msg: "list img" });
         });
 });
 module.exports = router;
