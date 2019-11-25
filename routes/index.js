@@ -20,7 +20,7 @@ router.post("/login", function(req, res) {
   }).then(result => {
     if (result) {
       if (passwordHash.verify(req.body.password, result.password)) {
-        let token = jwt.sign({ user_id: result.id, user_name : result.name}, "qtahhnmsv");
+        let token = jwt.sign({ user_id: result.id, user_name : result.name,user_email : result.email}, "qtahhnmsv");
         return res.send({
           error:false,
           data: result,

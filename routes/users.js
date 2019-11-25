@@ -10,18 +10,7 @@ router.get("/", function(req, res) {
   let decoded = req.decoded;
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 2;
-
     db.User.findAndCountAll(
-    //   {
-    //   where: {
-    //     name: {
-    //       [Op.substring]: "%" + search + "%"
-    //     },
-    //         
-    //   },
-    //   limit: perPage,
-    //   offset: (currentPage - 1) * perPage
-    // }
     ).then(results => {
       let total = results.count;
       let data = results.rows;
@@ -89,11 +78,9 @@ router.put("/:id", function(req, res) {
 
 //delete
 router.delete("/:id", function (req, res, next) {
-  let user_id = req.decoded.user_id
+  let user_id = req.decoded.user_id;
   db.User.findByPk(req.params.id).then(
    result => {
-     console.log(result.dataValues.id)
-     console.log(user_id)
      if(result.dataValues.id == user_id){
       db.User.destroy({where: {id: req.params.id}}).then( 
         result =>{
