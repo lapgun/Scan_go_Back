@@ -44,6 +44,20 @@ router.get('/newest', function(req, res, next) {
     })
 })
 
+//limit 3
+router.get('/new-products', function(req, res, next) {
+    db.Products.findAndCountAll({
+        order: [
+            ['id', 'DESC']
+        ],
+        limit: 3,
+        include: 'images'
+    }).then(results => {
+        let data = results.rows
+        res.send({ data })
+    })
+})
+
 // get orderby order_time
 router.get('/order_time', function(req, res, next) {
     db.Products.findAndCountAll({
