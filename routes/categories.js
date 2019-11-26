@@ -7,15 +7,17 @@ router.get("/", function(req, res, next) {
   let search = req.query.search;
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
-  db.Categories.findAndCountAll({
-    where: {
-      name: {
-        [Op.substring]: "%" + search + "%"
-      }
-    },
-    limit: perPage,
-    offset: (currentPage - 1) * perPage,
-  }).then(results => {
+  db.Categories.findAndCountAll(
+  //   {
+  //   where: {
+  //     name: {
+  //       [Op.substring]: "%" + search + "%"
+  //     }
+  //   },
+  //   limit: perPage,
+  //   offset: (currentPage - 1) * perPage,
+  // }
+  ).then(results => {
     let total = results.count;
     let data = results.rows;
     let totalPage = Math.ceil(total / perPage);
