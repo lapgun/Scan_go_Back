@@ -42,10 +42,13 @@ router.get("/:id", function (req, res) {
 });
 
 router.post("/", async function (req, res) {
-    let cart = req.body.cart ? req.body.cart : undefined;
-    let total = req.body.total ? req.body.total : 0;
+    let cart = req.body.cart;
+    let total = req.body.total;
     total = total + total * 10 / 100;
-    let user_id = req.body.user_id ? req.body.user_id : 0;
+    let user_id = req.body.user_id;
+    if (!cart || !total || !user_id) {
+        return res.status(400).message("yeu cau dang nhap");
+    }
     let t;
     try {
         t = await sequelize.transaction();
@@ -53,19 +56,19 @@ router.post("/", async function (req, res) {
             customerId: user_id,
             order_status: false,
             total_price: total
-        }, {transaction: t}).then(result => {
-            for (let i = 0; i < cart.length; i++) {
+        }, {transaction: t}).then( function(result) {
+            for (let i in cart) {
                 db.Order_product.create({
                     orderId: result.id,
                     productId: cart[i].id,
                     quantity: cart[i].order_time,
-                    order_price: cart[i].price
+                    order_price: cart[i].price,
                 }, {transaction: t});
             }
         });
         await t.commit();
     } catch (err) {
-        throw err;
+        await t.rollback();
     }
 });
 router.put("/:id", function (req, res) {
