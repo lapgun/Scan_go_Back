@@ -52,7 +52,6 @@ router.post("/login", function(req, res) {
 });
 
 //register
-
 router.post("/register", function(req, res) {
   let user = req.body;
   user.password = passwordHash.generate(user.password);
