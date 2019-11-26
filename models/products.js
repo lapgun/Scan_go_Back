@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
     }, {});
     Product.associate = function(models) {
         Product.belongsTo(models.product_image, { foreignKey: 'picture', sourceKey: 'id', as: "images" });
-        // Product.belongsToMany(models.Categories, { foreignKey: 'categoriesId', targetKey: 'id', as: "category" });
     };
     return Product;
 };

@@ -13,7 +13,8 @@ var order_detailsRouter = require("./routes/order_details");
 var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
 var galleryRouter = require("./routes/product_image");
-var jwt = require("jsonwebtoken");
+var slideRouter = require("./routes/slide");
+var jwt = require('jsonwebtoken');
 var app = express();
 // view engine setup
 app.use(cors());
@@ -32,6 +33,7 @@ app.use("/order_details", order_detailsRouter);
 app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/gallery", galleryRouter);
+app.use("/slide", slideRouter);
 // decode token
 var checkUserLogged = (req, res, next) => {
   // check header or url parameters or post parameters for token
