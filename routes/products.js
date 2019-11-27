@@ -1,19 +1,6 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
-// <<<<<<< HEAD
-// router.get("/", function (req, res, next) {
-//     db.Products.findAll(
-//         {
-//             include : "images"
-//         }
-//     ).then(results => res.send({data: results}));
-// });
-// // Get by id
-// router.get("/:id", function (req, res, next) {
-//     db.Products.findByPk(req.params.id , {
-//         include : "images"
-// =======
 var multer = require("multer");
 const Op = db.Sequelize.Op;
 var upload = multer({ storage: storage });
