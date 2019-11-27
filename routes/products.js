@@ -1,24 +1,13 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
-var multer = require("multer");
 const Op = db.Sequelize.Op;
-var upload = multer({ storage: storage });
-var storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, "C:/scan-and-go/Scan-Go-FrontEnd/static/");
-    },
-    filename: function(req, file, cb) {
-        cb(null, Date.now() + "_" + file.originalname);
-    }
-});
 
 router.get("/", function(req, res, next) {
     db.Products.findAll({
         include: "images",
     }).then(results => res.send({ data: results }));
 });
-
 //Get all
 router.post("/", function(req, res, next) {
     console.log(req.body);

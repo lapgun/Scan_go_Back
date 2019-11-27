@@ -44,19 +44,6 @@ router.get("/:id", function(req, res) {
     }
 });
 
-router.post("/", function(req, res) {
-    let user = req.body;
-    user.password = passwordHash.generate(user.password);
-    if (!user) {
-        return res
-            .status(400)
-            .send({ error: true, message: "Please provide blog" });
-    }
-    db.User.create(user).then(result => {
-        return res.send({ error: false, data: result, message: "users list." });
-    });
-});
-
 //Update
 router.put("/:id", function(req, res) {
     let user_id = req.body.id;
@@ -92,8 +79,7 @@ router.delete("/:id", function(req, res, next) {
             } else {
                 return res.send({ error: true, message: "Not allow" })
             }
-        }
-    )
-});
 
+        });
+});
 module.exports = router;
