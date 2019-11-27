@@ -20,9 +20,14 @@ router.post("/login", function(req, res) {
   }).then(result => {
     if (result) {
       if (passwordHash.verify(req.body.password, result.password)) {
-        let token = jwt.sign({ user_id: result.id, user_name : result.name,user_email : result.email}, "qtahhnmsv");
+        let token = jwt.sign({
+          user_id: result.id,
+          user_name : result.name,
+          user_email : result.email,
+          user_role: result.role},
+            "qtahhnmsv");
         return res.send({
-          error:false,
+          error: false,
           data: result,
           token: token,
           message: "Login success"
@@ -35,38 +40,10 @@ router.post("/login", function(req, res) {
         });
       }
     } else {
-      return res.send({ error: true, data: result, message: "Wrong email,please try again" });
-    }
-  });
-});
-
-//register
-
-router.post("/register", function(req, res) {
-  let user = req.body;
-  user.password = passwordHash.generate(user.password);
-  if (!user) {
-    return res
-      .status(400)
-      .send({ error: true, message: "Please provide blog" });
-  }
-  db.User.findOne({
-    where: {
-      email: user.email
-    }
-  }).then(exist => {
-    if (exist) {
       return res.send({
         error: true,
-        message: " Email existed, please try another one"
-      });
-    } else {
-      db.User.create(user).then(result => {
-        return res.send({
-          error: false,
-          data: result,
-          message: "Registion success"
-        });
+        data: result,
+        message: "Wrong email,please try again"
       });
     }
   });
@@ -101,5 +78,10 @@ router.post("/register", function(req, res) {
       });
     }
   });
+});
+
+//decoded
+router.get("/get_user", function(req, res, next) {
+  console.log("req.decoded");
 });
 module.exports = router;
