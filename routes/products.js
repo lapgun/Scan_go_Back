@@ -8,7 +8,6 @@ router.get("/", function (req, res, next) {
         }
     ).then(results => res.send({data: results}));
 });
-
 // Get by id
 router.get("/:id", function (req, res, next) {
     db.Products.findByPk(req.params.id , {
@@ -17,7 +16,6 @@ router.get("/:id", function (req, res, next) {
         .then(results => res.send({data: results})
     );
 });
-
 // Post
 router.post("/", function (req, res) {
     let form = req.body;

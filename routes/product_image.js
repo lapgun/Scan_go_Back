@@ -4,21 +4,20 @@ var db = require("../models");
 var multer = require('multer');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'C:/Scan-go/client/client/static')
+        cb(null, 'C:/Scan-go/client/client/Scan-Go-FrontEnd/static')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
     }
 });
 var upload = multer({storage: storage});
-
 router.post("/upload", upload.array('files', 12), function (req, res, next) {
     if (req.files.length) {
-        const columnPrefixName = 'image_'
+        const columnPrefixName = 'image_';
         const dataInsert = {};
 
         //prepare data to insert
-        dataInsert.default_image = req.files[0].filename
+        dataInsert.default_image = req.files[0].filename;
 
         req.files.forEach((file, index) => {
             dataInsert[columnPrefixName + '' + parseInt(index + 1)] = file.filename
