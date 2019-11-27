@@ -57,14 +57,14 @@ var checkUserLogged = (req, res, next) => {
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;
-        if (decoded.user_role) {
+        // if (decoded.user_role) {
           next();
-        } else {
-          return res.status(403).send({
-            success: false,
-            message: "Not allow"
-          });
-        }
+        // } else {
+        //   return res.status(403).send({
+        //     success: false,
+        //     message: "Not allow"
+        //   });
+        // }
       }
     });
   } else {

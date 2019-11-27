@@ -1,6 +1,19 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
+// <<<<<<< HEAD
+// router.get("/", function (req, res, next) {
+//     db.Products.findAll(
+//         {
+//             include : "images"
+//         }
+//     ).then(results => res.send({data: results}));
+// });
+// // Get by id
+// router.get("/:id", function (req, res, next) {
+//     db.Products.findByPk(req.params.id , {
+//         include : "images"
+// =======
 var multer = require("multer");
 const Op = db.Sequelize.Op;
 var upload = multer({ storage: storage });
@@ -56,7 +69,7 @@ router.get('/new-products', function(req, res, next) {
         let data = results.rows
         res.send({ data })
     })
-})
+});
 
 // get orderby order_time
 router.get('/order_time', function(req, res, next) {
@@ -111,8 +124,6 @@ router.get("/:id", function(req, res, next) {
         })
         .then(results => res.send({ data: results }));
 });
-// get by category
-
 // Post
 router.post("/", function(req, res) {
     let form = req.body;

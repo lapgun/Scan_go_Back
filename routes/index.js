@@ -20,14 +20,12 @@ router.post("/login", function(req, res) {
   }).then(result => {
     if (result) {
       if (passwordHash.verify(req.body.password, result.password)) {
-        let token = jwt.sign(
-          {
-            user_id: result.id,
-            user_name: result.name,
-            user_role: result.role
-          },
-          "qtahhnmsv"
-        );
+        let token = jwt.sign({
+          user_id: result.id,
+          user_name : result.name,
+          user_email : result.email,
+          user_role: result.role},
+            "qtahhnmsv");
         return res.send({
           error: false,
           data: result,
@@ -52,7 +50,6 @@ router.post("/login", function(req, res) {
 });
 
 //register
-
 router.post("/register", function(req, res) {
   let user = req.body;
   user.password = passwordHash.generate(user.password);
