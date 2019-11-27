@@ -76,7 +76,7 @@ var checkUserLogged = (req, res, next) => {
     });
   }
 };
-app.use(checkUserLogged);
+// app.use(checkUserLogged);
 app.use("/users", usersRouter);
 
 app.listen(4000, function() {
