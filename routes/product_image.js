@@ -3,15 +3,15 @@ var router = express.Router();
 var db = require("../models");
 var multer = require('multer');
 var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'C:/Scan-go/client/client/Scan-Go-FrontEnd/static')
+    destination: function(req, file, cb) {
+        cb(null, 'C:/Users/User/Scan_go/Frontend/Scan-Go-FrontEnd/static/')
     },
     filename: function(req, file, cb) {
         cb(null, Date.now() + '_' + file.originalname)
     }
 });
-var upload = multer({storage: storage});
-router.post("/upload", upload.array('files', 12), function (req, res, next) {
+var upload = multer({ storage: storage });
+router.post("/upload", upload.array('files', 12), function(req, res, next) {
 
     if (req.files.length) {
         const columnPrefixName = 'image_';
