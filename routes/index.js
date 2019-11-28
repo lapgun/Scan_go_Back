@@ -3,7 +3,6 @@ var router = express.Router();
 var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
-const Op = db.Sequelize.Op;
 
 /* GET home page. */
 router.get("/", function(req, res, next) {

@@ -38,7 +38,7 @@ router.get("/:id", function(req, res) {
     }
     if (decoded) {
         db.User.findByPk(user_id).then(result => {
-            return res.send({ error: false, data: result, message: "user" });
+            return res.send({ error: false, data: result, decoded: decoded, message: "user" });
         });
     }
 });
