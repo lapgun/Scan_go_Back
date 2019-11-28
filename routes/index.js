@@ -3,6 +3,7 @@ var router = express.Router();
 var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
+var QRCode = require("qrcode");
 const Op = db.Sequelize.Op;
 
 /* GET home page. */
@@ -84,10 +85,9 @@ router.post("/register", function(req, res) {
 });
 
 //decoded
-router.get("/get_user/:id", function(req, res) {
-  let user_id = req.params.id;
-  db.User.findByPk(user_id).then(result => {
-    return res.send({ error: false, data: result, message: "user" });
+router.get("/getuser", function(req, res, next) {
+  QRCode.toDataURL("hello", function(err, url) {
+    console.log("hello");
   });
 });
 module.exports = router;
