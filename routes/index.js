@@ -3,6 +3,7 @@ var router = express.Router();
 var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
+var QRCode = require("qrcode");
 const Op = db.Sequelize.Op;
 
 /* GET home page. */
@@ -20,12 +21,15 @@ router.post("/login", function(req, res) {
   }).then(result => {
     if (result) {
       if (passwordHash.verify(req.body.password, result.password)) {
-        let token = jwt.sign({
-          user_id: result.id,
-          user_name : result.name,
-          user_email : result.email,
-          user_role: result.role},
-            "qtahhnmsv");
+        let token = jwt.sign(
+          {
+            user_id: result.id,
+            user_name: result.name,
+            user_email: result.email,
+            user_role: result.role
+          },
+          "qtahhnmsv"
+        );
         return res.send({
           error: false,
           data: result,
@@ -81,7 +85,9 @@ router.post("/register", function(req, res) {
 });
 
 //decoded
-router.get("/get_user", function(req, res, next) {
-  console.log("req.decoded");
+router.get("/getuser", function(req, res, next) {
+  QRCode.toDataURL("hello", function(err, url) {
+    console.log("hello");
+  });
 });
 module.exports = router;
