@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
+var multer = require("multer");
 const Op = db.Sequelize.Op;
 
 router.get("/", function(req, res, next) {
@@ -30,6 +31,7 @@ router.get("/search", function(req, res, next) {
         include: "images"
     }).then(results => res.send({ data: results }));
 });
+
 // get orderby id
 router.get("/newest", function(req, res, next) {
     db.Products.findAndCountAll({
@@ -121,12 +123,19 @@ router.post("/", function(req, res) {
 //Update
 
 router.put("/:id", function(req, res, next) {
-    let form = req.body;
+  let form = req.body;
+  console.log(req.params.id)
+  if(form==""){
     db.Products.update(form, {
-        where: {
-            id: req.params.id
-        }
-    }).then(res.send({ message: "update success" }));
+      where: {
+          id: req.params.id
+      }
+  }).then(res.send({ message: "update success" }));
+  }else{
+      console.log("hello")
+  }
+    
+    
 });
 
 //Delete
