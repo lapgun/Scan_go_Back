@@ -4,7 +4,6 @@ var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
 const Op = db.Sequelize.Op;
-
 // Get all
 router.get("/", function(req, res) {
     let decoded = req.decoded;
@@ -44,19 +43,6 @@ router.get("/:id", function(req, res) {
     }
 });
 
-router.post("/", function(req, res) {
-    let user = req.body;
-    user.password = passwordHash.generate(user.password);
-    if (!user) {
-        return res
-            .status(400)
-            .send({ error: true, message: "Please provide blog" });
-    }
-    db.User.create(user).then(result => {
-        return res.send({ error: false, data: result, message: "users list." });
-    });
-});
-
 //Update
 router.put("/:id", function(req, res) {
     let user_id = req.body.id;
@@ -78,11 +64,11 @@ router.put("/:id", function(req, res) {
 
 //delete
 router.delete("/:id", function(req, res, next) {
-    let user_id = req.decoded.user_id
+    let user_id = req.decoded.user_id;
     db.User.findByPk(req.params.id).then(
         result => {
-            console.log(result.dataValues.id)
-            console.log(user_id)
+            console.log(result.dataValues.id);
+            console.log(user_id);
             if (result.dataValues.id == user_id) {
                 db.User.destroy({ where: { id: req.params.id } }).then(
                     result => {
@@ -95,5 +81,4 @@ router.delete("/:id", function(req, res, next) {
         }
     )
 });
-
 module.exports = router;

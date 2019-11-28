@@ -36,50 +36,50 @@ app.use("/gallery", galleryRouter);
 app.use("/slide", slideRouter);
 // decode token
 var checkUserLogged = (req, res, next) => {
-  // check header or url parameters or post parameters for token
-  var token =
-    req.body.token ||
-    req.query.token ||
-    req.headers["x-access-token"] ||
-    req.headers["access-token"] ||
-    req.headers["token"] ||
-    req.header("token");
-  // decode token
-  if (token) {
-    // verifies secret and checks exp
-    jwt.verify(token, "qtahhnmsv", (err, decoded) => {
-      if (err) {
-        return res.json({
-          success: false,
-          message: "Failed to authenticate token.",
-          header: req.headers
+    // check header or url parameters or post parameters for token
+    var token =
+        req.body.token ||
+        req.query.token ||
+        req.headers["x-access-token"] ||
+        req.headers["access-token"] ||
+        req.headers["token"] ||
+        req.header("token");
+    // decode token
+    if (token) {
+        // verifies secret and checks exp
+        jwt.verify(token, "qtahhnmsv", (err, decoded) => {
+            if (err) {
+                return res.json({
+                    success: false,
+                    message: "Failed to authenticate token.",
+                    header: req.headers
+                });
+            } else {
+                // if everything is good, save to request for use in other routes
+                req.decoded = decoded;
+                // if (decoded.user_role) {
+                next();
+                // } else {
+                //     return res.status(403).send({
+                //         success: false,
+                //         message: "Not allow"
+                //     });
+                // }
+            }
         });
-      } else {
-        // if everything is good, save to request for use in other routes
-        req.decoded = decoded;
-        if (decoded.user_role) {
-          next();
-        } else {
-          return res.status(403).send({
+    } else {
+        // if there is no token
+        // return an error
+        return res.status(403).send({
             success: false,
-            message: "Not allow"
-          });
-        }
-      }
-    });
-  } else {
-    // if there is no token
-    // return an error
-    return res.status(403).send({
-      success: false,
-      message: "No token provided."
-    });
-  }
+            message: "No token provided."
+        });
+    }
 };
 app.use(checkUserLogged);
 app.use("/users", usersRouter);
 
 app.listen(4000, function() {
-  console.log("Node app is running on port 4000");
+    console.log("Node app is running on port 4000");
 });
 module.exports = app;

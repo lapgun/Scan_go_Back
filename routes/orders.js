@@ -56,9 +56,10 @@ router.post("/", async function (req, res) {
             customerId: user_id,
             order_status: false,
             total_price: total
-        }, {transaction: t}).then( function(result) {
+        }, {transaction: t})
+            .then( async function(result) {
             for (let i in cart) {
-                db.Order_product.create({
+             await db.Order_product.create({
                     orderId: result.id,
                     productId: cart[i].id,
                     quantity: cart[i].order_time,
@@ -66,7 +67,7 @@ router.post("/", async function (req, res) {
                 }, {transaction: t});
             }
         });
-        await t.commit();
+       return await t.commit();
     } catch (err) {
         await t.rollback();
     }
