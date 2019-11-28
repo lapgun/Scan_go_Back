@@ -23,10 +23,10 @@ router.post("/login", function(req, res) {
                 let token = jwt.sign({
                         user_id: result.id,
                         user_name: result.name,
+                        user_email: result.email,
                         user_role: result.role
                     },
-                    "qtahhnmsv"
-                );
+                    "qtahhnmsv");
                 return res.send({
                     error: false,
                     data: result,

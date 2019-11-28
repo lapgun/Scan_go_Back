@@ -9,7 +9,7 @@ router.get("/", function(req, res, next) {
     }).then(results => res.send({ data: results }));
 });
 //Get all
-router.post("/", function(req, res, next) {
+router.post("/sort", function(req, res, next) {
     console.log(req.body);
     db.Products.findAndCountAll({
         include: "images",
@@ -53,9 +53,9 @@ router.get("/new-products", function(req, res, next) {
         limit: 3,
         include: "images"
     }).then(results => {
-        let data = results.rows;
-        res.send({ data });
-    });
+        let data = results.rows
+        res.send({ data })
+    })
 });
 
 // get orderby order_time
@@ -107,8 +107,6 @@ router.get("/:id", function(req, res, next) {
         include: "images"
     }).then(results => res.send({ data: results }));
 });
-// get by category
-
 // Post
 router.post("/", function(req, res) {
     let form = req.body;
