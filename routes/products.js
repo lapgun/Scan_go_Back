@@ -25,7 +25,8 @@ router.get("/", function(req, res) {
     //   }
     // },
     limit: perPage,
-    offset: (currentPage - 1) * perPage
+    offset: (currentPage - 1) * perPage,
+    include:"images"
   }).then(results => {
     let total = results.count;
     let data = results.rows;
@@ -42,8 +43,8 @@ router.get("/", function(req, res) {
   });
 });
 
-//Get all
-router.post("/", function(req, res, next) {
+//Get by order
+router.post("/get", function(req, res, next) {
   console.log(req.body);
   db.Products.findAndCountAll({
     include: "images",
@@ -77,15 +78,17 @@ router.get("/newest", function(req, res, next) {
 });
 
 //limit 3
-router.get("/new-products", function(req, res, next) {
-  db.Products.findAndCountAll({
-    order: [["id", "DESC"]],
-    limit: 3,
-    include: "images"
-  }).then(results => {
-    let data = results.rows;
-    res.send({ data });
-  });
+router.get('/new-products', function(req, res, next) {
+    db.Products.findAndCountAll({
+        order: [
+            ['id', 'DESC']
+        ],
+        limit: 3,
+        include: 'images'
+    }).then(results => {
+        let data = results.rows
+        res.send({ data })
+    })
 });
 
 // get orderby order_time
@@ -135,8 +138,6 @@ router.get("/:id", function(req, res, next) {
     include: "images"
   }).then(results => res.send({ data: results }));
 });
-// get by category
-
 // Post
 router.post("/", function(req, res) {
   let form = req.body;

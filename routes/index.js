@@ -24,6 +24,7 @@ router.post("/login", function(req, res) {
           {
             user_id: result.id,
             user_name: result.name,
+            user_email: result.email,
             user_role: result.role
           },
           "qtahhnmsv"
@@ -52,7 +53,6 @@ router.post("/login", function(req, res) {
 });
 
 //register
-
 router.post("/register", function(req, res) {
   let user = req.body;
   user.password = passwordHash.generate(user.password);
@@ -84,7 +84,10 @@ router.post("/register", function(req, res) {
 });
 
 //decoded
-router.get("/get_user", function(req, res, next) {
-  console.log("req.decoded");
+router.get("/get_user/:id", function(req, res) {
+  let user_id = req.params.id;
+  db.User.findByPk(user_id).then(result => {
+    return res.send({ error: false, data: result, message: "user" });
+  });
 });
 module.exports = router;

@@ -4,7 +4,6 @@ var db = require("../models");
 var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
 const Op = db.Sequelize.Op;
-
 // Get all
 router.get("/", function(req, res) {
     let decoded = req.decoded;
@@ -78,11 +77,11 @@ router.put("/:id", function(req, res) {
 
 //delete
 router.delete("/:id", function(req, res, next) {
-    let user_id = req.decoded.user_id
+    let user_id = req.decoded.user_id;
     db.User.findByPk(req.params.id).then(
         result => {
-            console.log(result.dataValues.id)
-            console.log(user_id)
+            console.log(result.dataValues.id);
+            console.log(user_id);
             if (result.dataValues.id == user_id) {
                 db.User.destroy({ where: { id: req.params.id } }).then(
                     result => {
