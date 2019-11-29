@@ -99,10 +99,28 @@ router.put("/:id", function (req, res) {
         res.send(result);
     });
 });
-
+router.put("/confirm/:id", function (req, res) {
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({order_status : 1}, {
+        where: {
+            id: order_id,
+        }
+    }).then(result => {
+        res.send({data:result});
+    });
+});
+router.put("/cancel/:id", function (req, res) {
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({order_status : 2}, {
+        where: {
+            id: order_id,
+        }
+    }).then(result => {
+        res.send({data:result});
+    });
+});
 router.delete("/:id", function (req, res) {
     let order_id = req.params.id;
-
     if (!order_id) {
         return res
             .status(400)
