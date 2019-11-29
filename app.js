@@ -16,6 +16,9 @@ var galleryRouter = require("./routes/product_image");
 var slideRouter = require("./routes/slide");
 var jwt = require('jsonwebtoken');
 var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
 // view engine setup
 app.use(cors());
 app.set("views", path.join(__dirname, "views"));
@@ -25,6 +28,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "storage")));
+
+io.on('connection', function(socket) {
+    socket.on('text-added', function(text) {
+        socket.broadcast.emit('push-new-text', text)
+    })
+});
+
 app.use("/", indexRouter);
 app.use("/order_products", order_productsRouter);
 app.use("/order_statuses", order_statusesRouter);

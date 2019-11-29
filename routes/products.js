@@ -4,48 +4,52 @@ var db = require("../models");
 var multer = require("multer");
 const Op = db.Sequelize.Op;
 
-router.get("/", function(req, res, next) {
-    let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
-    let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
-    db.Products.findAll({
-        include: "images",
+router.get('/', function(req, res, next) {
+    db.Products.findAndCountAll({
+        include: "images"
     }).then(results => {
-        let total = results.count;
+        let data = results.rows
+        res.send({ data: data })
+    })
+});
+//Get all
+router.post("/sort", function(req, res, next) {
+    let currentPage = req.query.page ? parseInt(req.query.page) : 1;
+    let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
+    db.Products.findAndCountAll({
+        limit: perPage,
+        offset: (currentPage - 1) * perPage,
+        include: "images",
+        order: [req.body]
+    }).then(results => {
         let data = results.rows;
+        let total = results.count;
         let totalPage = Math.ceil(total / perPage);
         res.send({
             data,
             pagination: {
-                totalPage,
-                currentPage,
+                total,
                 perPage,
+                currentPage,
+                totalPage
             }
-        })
-    });
-});
-//Get all
-router.post("/sort", function(req, res, next) {
-    console.log(req.body);
-    db.Products.findAndCountAll({
-        include: "images",
-        order: [req.body],
-    }).then(results => {
-        let data = results.rows;
-        res.send({ data });
+        });
     });
 });
 //search
 router.get("/search", function(req, res, next) {
-    db.Products.findAll({
+    db.Products.findAndCountAll({
         where: {
             name: {
                 [Op.substring]: req.query.search
             }
         },
         include: "images"
-    }).then(results => res.send({ data: results }));
+    }).then(results => {
+        let data = results.rows;
+        res.send({ data });
+    });
 });
-
 // get orderby id
 router.get("/newest", function(req, res, next) {
     db.Products.findAndCountAll({
@@ -69,9 +73,9 @@ router.get("/new-products", function(req, res, next) {
         limit: 3,
         include: "images"
     }).then(results => {
-        let data = results.rows
-        res.send({ data })
-    })
+        let data = results.rows;
+        res.send({ data });
+    });
 });
 
 // get orderby order_time
@@ -101,22 +105,6 @@ router.get("/menu/:id", function(req, res, next) {
     });
 });
 
-//search
-router.get("/search", function(req, res, next) {
-    let search = req.query.search;
-    db.Products.findAndCountAll({
-        where: {
-            name: {
-                [Op.substring]: "%" + search + "%"
-            }
-        },
-        include: "images"
-    }).then(results => {
-        let data = results.rows;
-        res.send({ data });
-    });
-});
-
 // Get by id
 router.get("/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
@@ -138,18 +126,12 @@ router.post("/", function(req, res) {
 
 router.put("/:id", function(req, res, next) {
     let form = req.body;
-    console.log(req.params.id)
-    if (form == "") {
-        db.Products.update(form, {
-            where: {
-                id: req.params.id
-            }
-        }).then(res.send({ message: "update success" }));
-    } else {
-        console.log("hello")
-    }
 
-
+    db.Products.update(form, {
+        where: {
+            id: req.params.id
+        }
+    }).then(results => { res.send({ results }) });
 });
 
 //Delete
