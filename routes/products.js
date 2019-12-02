@@ -112,15 +112,14 @@ router.post("/", function(req, res) {
 
 router.put("/:id", function(req, res, next) {
   let form = req.body;
-  console.log(req.params.id);
-  if (form == "") {
+  if(form==""){
     db.Products.update(form, {
       where: {
         id: req.params.id
       }
-    }).then(res.send({ message: "update success" }));
-  } else {
-    console.log("hello");
+  }).then(result => {res.send({data: result, message: "update success" })});
+  }else{
+      console.log("hello")
   }
 });
 
