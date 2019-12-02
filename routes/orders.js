@@ -31,11 +31,27 @@ router.get("/", function (req, res) {
     });
 });
 
+//get many order by id
+router.get("/customerId/:id", function (req, res) {
+    let customerId = req.params.id ? req.params.id : undefined;
+    db.Orders.findAndCountAll({
+        where: {
+            customerId: customerId
+        },
+        include: 'order_products'
+    }).then(result => {
+        if (!result) {
+            res.status(500).message("orders not exist!")
+        }else
+            res.send(result);
+
+    })
+});
+
+//get once order by id
 router.get("/:id", function (req, res) {
     db.Orders.findByPk(req.params.id, {
         include: 'order_products',
-        // include : 'order_statuses',
-        // include : 'order_detail'
     }).then(result => {
         return res.send(result);
     });
@@ -57,17 +73,17 @@ router.post("/", async function (req, res) {
             order_status: false,
             total_price: total
         }, {transaction: t})
-            .then( async function(result) {
-            for (let i in cart) {
-             await db.Order_product.create({
-                    orderId: result.id,
-                    productId: cart[i].id,
-                    quantity: cart[i].order_time,
-                    order_price: cart[i].price,
-                }, {transaction: t});
-            }
-        });
-       return await t.commit();
+            .then(async function (result) {
+                for (let i in cart) {
+                    await db.Order_product.create({
+                        orderId: result.id,
+                        productId: cart[i].id,
+                        quantity: cart[i].order_time,
+                        order_price: cart[i].price,
+                    }, {transaction: t});
+                }
+            });
+        return await t.commit();
     } catch (err) {
         await t.rollback();
     }
@@ -83,10 +99,28 @@ router.put("/:id", function (req, res) {
         res.send(result);
     });
 });
-
+router.put("/confirm/:id", function (req, res) {
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({order_status : 1}, {
+        where: {
+            id: order_id,
+        }
+    }).then(result => {
+        res.send({data:result});
+    });
+});
+router.put("/cancel/:id", function (req, res) {
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({order_status : 2}, {
+        where: {
+            id: order_id,
+        }
+    }).then(result => {
+        res.send({data:result});
+    });
+});
 router.delete("/:id", function (req, res) {
     let order_id = req.params.id;
-
     if (!order_id) {
         return res
             .status(400)
@@ -105,5 +139,4 @@ router.delete("/:id", function (req, res) {
         });
     });
 });
-
 module.exports = router;
