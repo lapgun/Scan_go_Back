@@ -55,10 +55,13 @@ function handler(req, res) {
 io.on('connection', function (socket) {
     socket.on("update-status", function (data) {
         io.sockets.emit("success-status", data);
-    })
+    });
     socket.on("cancel-order", function (data) {
         io.sockets.emit("success-cancel", data);
-    })
+    });
+    socket.on("cancel-user-order", function (data) {
+        io.sockets.emit("success-cancel-user-order", data);
+    });
 
 });
 // decode token
