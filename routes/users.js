@@ -37,7 +37,9 @@ router.get("/:id", function(req, res) {
             .send({ error: true, message: "please provide user" });
     }
     if (decoded) {
-        db.User.findByPk(user_id).then(result => {
+        db.User.findByPk(user_id, {
+            include: 'comments'
+        }).then(result => {
             return res.send({ error: false, data: result, decoded: decoded, message: "user" });
         });
     }
@@ -47,7 +49,6 @@ router.get("/:id", function(req, res) {
 router.put("/:id", function(req, res) {
     let user_id = req.body.id;
     let user = req.body;
-    user.password = passwordHash.generate(user.password);
     if (!user_id || !user) {
         return res
             .status(400)

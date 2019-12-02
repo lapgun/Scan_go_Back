@@ -14,6 +14,7 @@ var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
 var galleryRouter = require("./routes/product_image");
 var slideRouter = require("./routes/slide");
+var commentRouter = require("./routes/comments");
 var jwt = require('jsonwebtoken');
 var app = express();
 var http = require('http').createServer(app);
@@ -44,6 +45,37 @@ app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/gallery", galleryRouter);
 app.use("/slide", slideRouter);
+app.use("/comment", commentRouter);
+//socket io
+const server = require('http').createServer(app);
+var io = require('socket.io')(server);
+var fs = require('fs');
+
+function handler(req, res) {
+    fs.readFile(__dirname + '/index.html',
+        function(err, data) {
+            if (err) {
+                res.writeHead(500);
+                return res.end('Error loading index.html');
+            }
+
+            res.writeHead(200);
+            res.end(data);
+        });
+}
+
+io.on('connection', function(socket) {
+    socket.on("update-status", function(data) {
+        io.sockets.emit("success-status", data);
+    });
+    socket.on("cancel-order", function(data) {
+        io.sockets.emit("success-cancel", data);
+    });
+    socket.on("cancel-user-order", function(data) {
+        io.sockets.emit("success-cancel-user-order", data);
+    });
+
+});
 // decode token
 var checkUserLogged = (req, res, next) => {
     // check header or url parameters or post parameters for token
@@ -88,8 +120,7 @@ var checkUserLogged = (req, res, next) => {
 };
 app.use(checkUserLogged);
 app.use("/users", usersRouter);
-
-app.listen(4000, function() {
+server.listen(4000, function() {
     console.log("Node app is running on port 4000");
 });
 module.exports = app;

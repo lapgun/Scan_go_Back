@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require("../models");
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
-router.get("/", function (req, res) {
+router.get("/", function(req, res) {
     let search = req.query.search;
     let currentPage = req.query.page ? parseInt(req.query.page) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
@@ -31,17 +31,33 @@ router.get("/", function (req, res) {
     });
 });
 
-router.get("/:id", function (req, res) {
+//get many order by id
+router.get("/customerId/:id", function(req, res) {
+    let customerId = req.params.id ? req.params.id : undefined;
+    db.Orders.findAndCountAll({
+        where: {
+            customerId: customerId
+        },
+        include: 'order_products'
+    }).then(result => {
+        if (!result) {
+            res.status(500).message("orders not exist!")
+        } else
+            res.send(result);
+
+    })
+});
+
+//get once order by id
+router.get("/:id", function(req, res) {
     db.Orders.findByPk(req.params.id, {
         include: 'order_products',
-        // include : 'order_statuses',
-        // include : 'order_detail'
     }).then(result => {
         return res.send(result);
     });
 });
 
-router.post("/", async function (req, res) {
+router.post("/", async function(req, res) {
     let cart = req.body.cart;
     let total = req.body.total;
     total = total + total * 10 / 100;
@@ -53,26 +69,26 @@ router.post("/", async function (req, res) {
     try {
         t = await sequelize.transaction();
         await db.Orders.create({
-            customerId: user_id,
-            order_status: false,
-            total_price: total
-        }, {transaction: t})
-            .then( async function(result) {
-            for (let i in cart) {
-             await db.Order_product.create({
-                    orderId: result.id,
-                    productId: cart[i].id,
-                    quantity: cart[i].order_time,
-                    order_price: cart[i].price,
-                }, {transaction: t});
-            }
-        });
-       return await t.commit();
+                customerId: user_id,
+                order_status: false,
+                total_price: total
+            }, { transaction: t })
+            .then(async function(result) {
+                for (let i in cart) {
+                    await db.Order_product.create({
+                        orderId: result.id,
+                        productId: cart[i].id,
+                        quantity: cart[i].order_time,
+                        order_price: cart[i].price,
+                    }, { transaction: t });
+                }
+            });
+        return await t.commit();
     } catch (err) {
         await t.rollback();
     }
 });
-router.put("/:id", function (req, res) {
+router.put("/:id", function(req, res) {
     let order_id = req.body.id;
     let order = req.body;
     db.Orders.update(order, {
@@ -83,14 +99,32 @@ router.put("/:id", function (req, res) {
         res.send(result);
     });
 });
-
-router.delete("/:id", function (req, res) {
+router.put("/confirm/:id", function(req, res) {
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({ order_status: 1 }, {
+        where: {
+            id: order_id,
+        }
+    }).then(result => {
+        res.send({ data: result });
+    });
+});
+router.put("/cancel/:id", function(req, res) {
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({ order_status: 2 }, {
+        where: {
+            id: order_id,
+        }
+    }).then(result => {
+        res.send({ data: result });
+    });
+});
+router.delete("/:id", function(req, res) {
     let order_id = req.params.id;
-
     if (!order_id) {
         return res
             .status(400)
-            .send({error: true, message: "Please provide order_id"});
+            .send({ error: true, message: "Please provide order_id" });
     }
     db.Orders.destroy({
         where: {
@@ -105,5 +139,4 @@ router.delete("/:id", function (req, res) {
         });
     });
 });
-
 module.exports = router;

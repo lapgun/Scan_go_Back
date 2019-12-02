@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     const Comment = sequelize.define('Comment', {
         comment: DataTypes.STRING,
         parentId: DataTypes.INTEGER,
-        userId: DataTypes.INTEGER
+        userId: DataTypes.INTEGER,
+        rate: DataTypes.INTEGER
     }, {});
     Comment.associate = function(models) {
         Comment.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', as: 'user' });
