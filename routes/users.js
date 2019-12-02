@@ -47,7 +47,6 @@ router.get("/:id", function(req, res) {
 router.put("/:id", function(req, res) {
     let user_id = req.body.id;
     let user = req.body;
-    user.password = passwordHash.generate(user.password);
     if (!user_id || !user) {
         return res
             .status(400)
