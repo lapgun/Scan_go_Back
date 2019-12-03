@@ -98,7 +98,8 @@ router.get("/menu/:id", function(req, res, next) {
         where: {
             categoriesId: id
         },
-        include: "images"
+        include: "images",
+
     }).then(results => {
         let data = results.rows;
         res.send({ data });
@@ -108,9 +109,17 @@ router.get("/menu/:id", function(req, res, next) {
 // Get by id
 router.get("/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
-        include: "images"
+        include: "images",
     }).then(results => res.send({ data: results }));
 });
+
+// Get by id
+router.get("/comment/:id", function(req, res, next) {
+    db.Products.findByPk(req.params.id, {
+        include: "comments",
+    }).then(results => res.send({ data: results }));
+});
+
 // Post
 router.post("/", function(req, res) {
     let form = req.body;
@@ -126,12 +135,15 @@ router.post("/", function(req, res) {
 
 router.put("/:id", function(req, res, next) {
     let form = req.body;
-
-    db.Products.update(form, {
-        where: {
-            id: req.params.id
-        }
-    }).then(results => { res.send({ results }) });
+    if (form == "") {
+        console.log("hello")
+    } else {
+        db.Products.update(form, {
+            where: {
+                id: req.params.id
+            }
+        }).then(result => { res.send({ data: result, message: "update success" }) });
+    }
 });
 
 //Delete

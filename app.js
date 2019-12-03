@@ -31,8 +31,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "storage")));
 
 io.on('connection', function(socket) {
-    socket.on('text-added', function(text) {
-        socket.broadcast.emit('push-new-text', text)
+    socket.on('text-added', function(form) {
+        socket.broadcast.emit('push-new-text', form)
     })
 });
 

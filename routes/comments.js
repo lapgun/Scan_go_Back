@@ -8,7 +8,6 @@ router.get("/", function(req, res) {
     db.Comment.findAndCountAll({
         limit: perPage,
         offset: (currentPage - 1) * perPage,
-        include: 'user'
     }).then(results => {
         let total = results.count;
         let data = results.rows;
