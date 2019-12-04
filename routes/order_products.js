@@ -6,8 +6,7 @@ router.get("/", function(req, res) {
   let search = req.query.search;
   let currentPage = req.query.page ? parseInt(req.query.page) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
-  db.Order_product.findAndCountAll(
-    {
+  db.Order_product.findAndCountAll({
     where: {
       name: {
         [Op.substring]: "%" + search + "%"
@@ -15,8 +14,7 @@ router.get("/", function(req, res) {
     },
     limit: perPage,
     offset: (currentPage - 1) * perPage
-  }
-  ).then(results => {
+  }).then(results => {
     let total = results.count;
     let data = results.rows;
     let totalPage = Math.ceil(total / perPage);
@@ -31,7 +29,19 @@ router.get("/", function(req, res) {
     });
   });
 });
-
+router.get("/get_products/:id", function(req, res) {
+  let id = req.params.id
+  db.Order_product
+    .findAndCountAll({
+      where: {
+        orderId: id
+      }
+    })
+    .then(results => {
+      let data = results.rows;
+      return res.send({ data });
+    });
+});
 router.get("/:id", function(req, res) {
   db.Order_product.findByPk(req.params.id).then(result => {
     return res.send(result);
