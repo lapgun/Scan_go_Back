@@ -83,11 +83,4 @@ router.post("/register", function(req, res) {
     }
   });
 });
-
-//decoded
-router.get("/getuser", function(req, res, next) {
-  QRCode.toDataURL("hello", function(err, url) {
-    console.log("hello");
-  });
-});
 module.exports = router;
