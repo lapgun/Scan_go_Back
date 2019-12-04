@@ -24,12 +24,27 @@ router.get("/", function(req, res) {
     });
 });
 
+
+//get by comment id
 router.get("/:id", function(req, res) {
     db.Comment.findByPk(req.params.id).then(result => {
         return res.send(result);
     });
 });
 
+
+// get by products Id
+router.get("/:id", function(req, res) {
+    db.Comment.findAndCountAll({
+        where: {
+            productId: req.params.id
+        }
+    }).then(result => {
+        return res.send(result);
+    });
+});
+
+//Post
 router.post("/", function(req, res) {
     let comment = req.body;
     db.Comment.create(comment).then(result => {

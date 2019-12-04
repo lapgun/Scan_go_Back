@@ -117,6 +117,7 @@ router.get("/:id", function(req, res, next) {
 router.get("/comment/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
         include: "comments",
+        limit: 5,
     }).then(results => res.send({ data: results }));
 });
 

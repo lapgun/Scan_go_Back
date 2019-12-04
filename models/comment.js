@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         img: DataTypes.STRING,
         parentId: DataTypes.INTEGER,
         userId: DataTypes.INTEGER,
-        rate: DataTypes.INTEGER,
+        rating: DataTypes.INTEGER,
         name: DataTypes.STRING,
         productId: DataTypes.INTEGER
     }, {});
