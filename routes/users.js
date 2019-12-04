@@ -37,10 +37,8 @@ router.get("/:id", function(req, res) {
             .send({ error: true, message: "please provide user" });
     }
     if (decoded) {
-        db.User.findByPk(user_id, {
-            include: 'comments'
-        }).then(result => {
-            return res.send({ error: false, data: result, decoded: decoded, message: "user" });
+        db.User.findByPk(user_id).then(result => {
+            return res.send({ error: false, data: result, decoded, message: "user" });
         });
     }
 });
@@ -62,14 +60,41 @@ router.put("/:id", function(req, res) {
         return res.send({ error: false, data: result, message: "users list." });
     });
 });
-
+//change password
+router.put("/changePassword/:id", function(req, res) {
+    let user_id = req.body.id;
+    req.body.newPassword = passwordHash.generate(req.body.newPassword);
+    db.User.findByPk(user_id).then(result => {
+        if (result) {
+            if (passwordHash.verify(req.body.oldPassword, result.password)) {
+                db.User.update({ password: req.body.newPassword }, {
+                    where: {
+                        id: result.id
+                    }
+                }).then(results => {
+                    return res.send({
+                        success: true,
+                        data: results,
+                        msg: "cập nhật thành công"
+                    });
+                })
+            } else
+                return res.send({
+                    success: false,
+                    msg: "nhập sai pass word"
+                })
+        } else
+            return res.send({
+                success: false,
+                msg: "không tồn tại khách hàng",
+            })
+    })
+});
 //delete
 router.delete("/:id", function(req, res, next) {
     let user_id = req.decoded.user_id;
     db.User.findByPk(req.params.id).then(
         result => {
-            console.log(result.dataValues.id);
-            console.log(user_id);
             if (result.dataValues.id == user_id) {
                 db.User.destroy({ where: { id: req.params.id } }).then(
                     result => {
