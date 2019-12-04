@@ -14,17 +14,28 @@ var categoriesRouter = require("./routes/categories");
 var productsRouter = require("./routes/products");
 var galleryRouter = require("./routes/product_image");
 var slideRouter = require("./routes/slide");
+var commentRouter = require("./routes/comments");
 var jwt = require('jsonwebtoken');
 var app = express();
+var http = require('http').createServer(app);
+var io = require('socket.io')(http);
+
 // view engine setup
 app.use(cors());
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "storage")));
+
+io.on('connection', function(socket) {
+    socket.on('text-added', function(form) {
+        socket.broadcast.emit('push-new-text', form)
+    })
+});
+
 app.use("/", indexRouter);
 app.use("/order_products", order_productsRouter);
 app.use("/order_statuses", order_statusesRouter);
@@ -34,6 +45,7 @@ app.use("/categories", categoriesRouter);
 app.use("/products", productsRouter);
 app.use("/gallery", galleryRouter);
 app.use("/slide", slideRouter);
+app.use("/comment", commentRouter);
 //socket io
 const server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -41,7 +53,7 @@ var fs = require('fs');
 
 function handler(req, res) {
     fs.readFile(__dirname + '/index.html',
-        function (err, data) {
+        function(err, data) {
             if (err) {
                 res.writeHead(500);
                 return res.end('Error loading index.html');
@@ -52,14 +64,14 @@ function handler(req, res) {
         });
 }
 
-io.on('connection', function (socket) {
-    socket.on("update-status", function (data) {
+io.on('connection', function(socket) {
+    socket.on("update-status", function(data) {
         io.sockets.emit("success-status", data);
     });
-    socket.on("cancel-order", function (data) {
+    socket.on("cancel-order", function(data) {
         io.sockets.emit("success-cancel", data);
     });
-    socket.on("cancel-user-order", function (data) {
+    socket.on("cancel-user-order", function(data) {
         io.sockets.emit("success-cancel-user-order", data);
     });
 
@@ -108,7 +120,7 @@ var checkUserLogged = (req, res, next) => {
 };
 app.use(checkUserLogged);
 app.use("/users", usersRouter);
-server.listen(4000, function () {
+server.listen(4000, function() {
     console.log("Node app is running on port 4000");
 });
 module.exports = app;

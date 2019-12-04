@@ -3,15 +3,9 @@ var router = express.Router();
 var db = require("../models");
 const Op = db.Sequelize.Op;
 router.get("/", function(req, res) {
-  let search = req.query.search;
   let currentPage = req.query.page ? parseInt(req.query.page) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
-  db.Order_product.findAndCountAll({
-    where: {
-      name: {
-        [Op.substring]: "%" + search + "%"
-      }
-    },
+  db.Comment.findAndCountAll({
     limit: perPage,
     offset: (currentPage - 1) * perPage
   }).then(results => {
@@ -29,36 +23,39 @@ router.get("/", function(req, res) {
     });
   });
 });
-router.get("/get_products/:id", function(req, res) {
-  let id = req.params.id;
-  db.Order_product.findAndCountAll({
-    where: {
-      orderId: id
-    }
-  }).then(results => {
-    let data = results.rows;
-    return res.send({ data });
-  });
-});
+
+//get by comment id
 router.get("/:id", function(req, res) {
-  db.Order_product.findByPk(req.params.id).then(result => {
+  db.Comment.findByPk(req.params.id).then(result => {
     return res.send(result);
   });
 });
 
+// get by products Id
+router.get("/:id", function(req, res) {
+  db.Comment.findAndCountAll({
+    where: {
+      productId: req.params.id
+    }
+  }).then(result => {
+    return res.send(result);
+  });
+});
+
+//Post
 router.post("/", function(req, res) {
-  let order_product = req.body;
-  db.Order_product.create(order_product).then(result => {
+  let comment = req.body;
+  db.Comment.create(comment).then(result => {
     return res.send(result);
   });
 });
 
 router.put("/:id", function(req, res) {
-  let order_product_id = req.body.id;
-  let order_product = req.body;
-  db.Order_product.update(order_product, {
+  let comment_id = req.body.id;
+  let comment = req.body;
+  db.Comment.update(comment, {
     where: {
-      id: order_product_id
+      id: comment_id
     }
   }).then(result => {
     res.send(result);
@@ -66,16 +63,16 @@ router.put("/:id", function(req, res) {
 });
 
 router.delete("/:id", function(req, res) {
-  let order_product_id = req.params.id;
+  let comment_id = req.params.id;
 
-  if (!order_product_id) {
+  if (!comment_id) {
     return res
       .status(400)
-      .send({ error: true, message: "Please provide order_product_id" });
+      .send({ error: true, message: "Please provide comment_id" });
   }
-  db.Order_product.destroy({
+  db.Comment.destroy({
     where: {
-      id: order_product_id
+      id: comment_id
     }
   }).then(result => {
     console.log("Done");

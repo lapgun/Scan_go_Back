@@ -5,12 +5,12 @@ const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 router.get("/", function(req, res) {
   let search = req.query.search;
-  let currentPage = req.query.page ? parseInt(req.query.page) : 1;
+  let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
   let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
   db.Orders.findAndCountAll({
     where: {
       id: {
-        [Op.substring]: "%" + search + "%"
+        [Op.substring]: search
       }
     },
     limit: perPage,
@@ -58,6 +58,7 @@ router.get("/:id", function(req, res) {
 router.post("/", async function(req, res) {
   let cart = req.body.cart;
   let total = req.body.total;
+  total = total + (total * 10) / 100;
   let user_id = req.body.user_id;
   if (!cart || !total || !user_id) {
     return res.status(400).message("yeu cau dang nhap");
@@ -68,7 +69,7 @@ router.post("/", async function(req, res) {
     await db.Orders.create(
       {
         customerId: user_id,
-        order_status: true,
+        order_status: false,
         total_price: total
       },
       { transaction: t }

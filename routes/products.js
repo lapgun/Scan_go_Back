@@ -4,6 +4,14 @@ var db = require("../models");
 var multer = require("multer");
 const Op = db.Sequelize.Op;
 
+router.get("/", function(req, res, next) {
+  db.Products.findAndCountAll({
+    include: "images"
+  }).then(results => {
+    let data = results.rows;
+    res.send({ data: data });
+  });
+});
 //Get all
 router.post("/sort", function(req, res, next) {
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
@@ -97,6 +105,15 @@ router.get("/:id", function(req, res, next) {
     include: "images"
   }).then(results => res.send({ data: results }));
 });
+
+// Get by id
+router.get("/comment/:id", function(req, res, next) {
+  db.Products.findByPk(req.params.id, {
+    include: "comments",
+    limit: 5
+  }).then(results => res.send({ data: results }));
+});
+
 // Post
 router.post("/", function(req, res) {
   let form = req.body;
@@ -112,14 +129,16 @@ router.post("/", function(req, res) {
 
 router.put("/:id", function(req, res, next) {
   let form = req.body;
-  if(form==""){
+  if (form == "") {
+    console.log("hello");
+  } else {
     db.Products.update(form, {
       where: {
         id: req.params.id
       }
-  }).then(result => {res.send({data: result, message: "update success" })});
-  }else{
-      console.log("hello")
+    }).then(result => {
+      res.send({ data: result, message: "update success" });
+    });
   }
 });
 
