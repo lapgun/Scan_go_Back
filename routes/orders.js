@@ -4,55 +4,55 @@ var db = require("../models");
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 router.get("/", function(req, res) {
-  let search = req.query.search;
-  let currentPage = req.query.page ? parseInt(req.query.page) : 1;
-  let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
-  db.Orders.findAndCountAll({
-    where: {
-      id: {
-        [Op.substring]: "%" + search + "%"
-      }
-    },
-    limit: perPage,
-    offset: (currentPage - 1) * perPage
-  }).then(results => {
-    let total = results.count;
-    let data = results.rows;
-    let totalPage = Math.ceil(total / perPage);
-    res.send({
-      data,
-      pagination: {
-        total,
-        perPage,
-        currentPage,
-        totalPage
-      }
+    let search = req.query.search;
+    let currentPage = req.query.page ? parseInt(req.query.page) : 1;
+    let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
+    db.Orders.findAndCountAll({
+        where: {
+            id: {
+                [Op.substring]: "%" + search + "%"
+            }
+        },
+        limit: perPage,
+        offset: (currentPage - 1) * perPage
+    }).then(results => {
+        let total = results.count;
+        let data = results.rows;
+        let totalPage = Math.ceil(total / perPage);
+        res.send({
+            data,
+            pagination: {
+                total,
+                perPage,
+                currentPage,
+                totalPage
+            }
+        });
     });
-  });
 });
 
 //get many order by id
 router.get("/customerId/:id", function(req, res) {
-  let customerId = req.params.id ? req.params.id : undefined;
-  db.Orders.findAndCountAll({
-    where: {
-      customerId: customerId
-    },
-    include: "order_products"
-  }).then(result => {
-    if (!result) {
-      res.status(500).message("orders not exist!");
-    } else res.send(result);
-  });
+    let customerId = req.params.id ? req.params.id : undefined;
+    db.Orders.findAndCountAll({
+        where: {
+            customerId: customerId
+        },
+        include: "order_products"
+    }).then(result => {
+        if (!result) {
+            res.status(500).message("orders not exist!");
+        } else res.send(result);
+    });
 });
 
 //get once order by id
 router.get("/:id", function(req, res) {
-  db.Orders.findByPk(req.params.id, {
-    include: "order_products"
-  }).then(result => {
-    return res.send(result);
-  });
+    db.Orders.findByPk(req.params.id, {
+        include: "order_products"
+    }).then(result => {
+        return res.send(result);
+    });
 });
 
 router.post("/", async function(req, res) {
@@ -91,60 +91,54 @@ router.post("/", async function(req, res) {
   }
 });
 router.put("/:id", function(req, res) {
-  let order_id = req.body.id;
-  let order = req.body;
-  db.Orders.update(order, {
-    where: {
-      id: order_id
-    }
-  }).then(result => {
-    res.send(result);
-  });
+    let order_id = req.body.id;
+    let order = req.body;
+    db.Orders.update(order, {
+        where: {
+            id: order_id
+        }
+    }).then(result => {
+        res.send(result);
+    });
 });
 router.put("/confirm/:id", function(req, res) {
-  let order_id = req.params.id ? req.params.id : undefined;
-  db.Orders.update(
-    { order_status: 1 },
-    {
-      where: {
-        id: order_id
-      }
-    }
-  ).then(result => {
-    res.send({ data: result });
-  });
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({ order_status: 1 }, {
+        where: {
+            id: order_id
+        }
+    }).then(result => {
+        res.send({ data: result });
+    });
 });
 router.put("/cancel/:id", function(req, res) {
-  let order_id = req.params.id ? req.params.id : undefined;
-  db.Orders.update(
-    { order_status: 2 },
-    {
-      where: {
-        id: order_id
-      }
-    }
-  ).then(result => {
-    res.send({ data: result });
-  });
+    let order_id = req.params.id ? req.params.id : undefined;
+    db.Orders.update({ order_status: 2 }, {
+        where: {
+            id: order_id
+        }
+    }).then(result => {
+        res.send({ data: result });
+    });
 });
 router.delete("/:id", function(req, res) {
-  let order_id = req.params.id;
-  if (!order_id) {
-    return res
-      .status(400)
-      .send({ error: true, message: "Please provide order_id" });
-  }
-  db.Orders.destroy({
-    where: {
-      id: order_id
+    let order_id = req.params.id;
+    if (!order_id) {
+        return res
+            .status(400)
+            .send({ error: true, message: "Please provide order_id" });
     }
-  }).then(result => {
-    console.log("Done");
-    return res.send({
-      error: false,
-      data: result,
-      message: "user has been updated successfully."
+    db.Orders.destroy({
+        where: {
+            id: order_id
+        }
+    }).then(result => {
+        console.log("Done");
+        return res.send({
+            error: false,
+            data: result,
+            message: "user has been updated successfully."
+        });
     });
-  });
 });
 module.exports = router;
