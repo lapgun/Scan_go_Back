@@ -1,9 +1,7 @@
 var express = require("express");
 var router = express.Router();
 var db = require("../models");
-var multer = require("multer");
 const Op = db.Sequelize.Op;
-
 //Get all
 router.post("/sort", function(req, res, next) {
   let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
