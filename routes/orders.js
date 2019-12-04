@@ -58,7 +58,6 @@ router.get("/:id", function(req, res) {
 router.post("/", async function(req, res) {
   let cart = req.body.cart;
   let total = req.body.total;
-  total = total + (total * 10) / 100;
   let user_id = req.body.user_id;
   if (!cart || !total || !user_id) {
     return res.status(400).message("yeu cau dang nhap");

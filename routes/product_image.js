@@ -16,7 +16,6 @@ router.post("/upload", upload.array('files', 12), function(req, res, next) {
     if (req.files.length) {
         const columnPrefixName = 'image_';
         const dataInsert = {};
-
         //prepare data to insert
         dataInsert.default_image = req.files[0].filename;
 
