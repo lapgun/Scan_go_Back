@@ -30,17 +30,15 @@ router.get("/", function(req, res) {
   });
 });
 router.get("/get_products/:id", function(req, res) {
-  let id = req.params.id
-  db.Order_product
-    .findAndCountAll({
-      where: {
-        orderId: id
-      }
-    })
-    .then(results => {
-      let data = results.rows;
-      return res.send({ data });
-    });
+  let id = req.params.id;
+  db.Order_product.findAndCountAll({
+    where: {
+      orderId: id
+    }
+  }).then(results => {
+    let data = results.rows;
+    return res.send({ data });
+  });
 });
 router.get("/:id", function(req, res) {
   db.Order_product.findByPk(req.params.id).then(result => {
