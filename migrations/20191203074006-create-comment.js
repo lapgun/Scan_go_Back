@@ -20,7 +20,7 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER
       },
-      rate: {
+      rating: {
         type: Sequelize.INTEGER
       },
       name: {

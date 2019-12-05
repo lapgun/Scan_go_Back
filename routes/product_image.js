@@ -26,7 +26,7 @@ router.post("/upload", upload.array("files", 12), function(req, res, next) {
     // Insert to db
     db.product_image.bulkCreate([dataInsert]).then(result => {
       res.send({ data: result[0], msg: "success" });
-    });
+    }); 
   }
 });
 router.get("/", function(req, res) {
