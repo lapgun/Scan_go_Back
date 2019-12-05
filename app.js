@@ -15,6 +15,7 @@ var productsRouter = require("./routes/products");
 var galleryRouter = require("./routes/product_image");
 var slideRouter = require("./routes/slide");
 var commentRouter = require("./routes/comments");
+var loginFacebook = require("./routes/loginFacebook");
 var jwt = require('jsonwebtoken');
 var app = express();
 // view engine setup
@@ -23,7 +24,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "storage")));
 app.use("/", indexRouter);
@@ -36,13 +37,15 @@ app.use("/products", productsRouter);
 app.use("/gallery", galleryRouter);
 app.use("/slide", slideRouter);
 app.use("/comment", commentRouter);
+app.use("/social", loginFacebook);
 //socket io
 const server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var fs = require('fs');
+
 function handler(req, res) {
     fs.readFile(__dirname + '/index.html',
-        function(err, data) {
+        function (err, data) {
             if (err) {
                 res.writeHead(500);
                 return res.end('Error loading index.html');
@@ -53,14 +56,14 @@ function handler(req, res) {
         });
 }
 
-io.on('connection', function(socket) {
-    socket.on("update-status", function(data) {
+io.on('connection', function (socket) {
+    socket.on("update-status", function (data) {
         io.sockets.emit("success-status", data);
     });
-    socket.on("cancel-order", function(data) {
+    socket.on("cancel-order", function (data) {
         io.sockets.emit("success-cancel", data);
     });
-    socket.on("cancel-user-order", function(data) {
+    socket.on("cancel-user-order", function (data) {
         io.sockets.emit("success-cancel-user-order", data);
     });
 
@@ -86,21 +89,11 @@ var checkUserLogged = (req, res, next) => {
                     header: req.headers
                 });
             } else {
-                // if everything is good, save to request for use in other routes
                 req.decoded = decoded;
-                // if (decoded.user_role) {
                 next();
-                // } else {
-                //     return res.status(403).send({
-                //         success: false,
-                //         message: "Not allow"
-                //     });
-                // }
             }
         });
     } else {
-        // if there is no token
-        // return an error
         return res.status(403).send({
             success: false,
             message: "No token provided."
@@ -109,7 +102,7 @@ var checkUserLogged = (req, res, next) => {
 };
 app.use(checkUserLogged);
 app.use("/users", usersRouter);
-server.listen(4000, function() {
+server.listen(4000, function () {
     console.log("Node app is running on port 4000");
 });
 module.exports = app;
