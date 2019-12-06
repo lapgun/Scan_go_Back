@@ -18,6 +18,7 @@ var commentRouter = require("./routes/comments");
 var loginFacebook = require("./routes/loginFacebook");
 var jwt = require('jsonwebtoken');
 var app = express();
+
 // view engine setup
 app.use(cors());
 app.set("views", path.join(__dirname, "views"));
@@ -38,6 +39,7 @@ app.use("/gallery", galleryRouter);
 app.use("/slide", slideRouter);
 app.use("/comment", commentRouter);
 app.use("/social", loginFacebook);
+//login fb
 //socket io
 const server = require('http').createServer(app);
 var io = require('socket.io')(server);

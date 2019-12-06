@@ -86,6 +86,7 @@ router.post("/", async function(req, res) {
       }
     });
     return await t.commit();
+
   } catch (err) {
     await t.rollback();
   }
