@@ -5,12 +5,12 @@ const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
 router.get("/", function(req, res) {
     let search = req.query.search;
-    let currentPage = req.query.page ? parseInt(req.query.page) : 1;
+    let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
     db.Orders.findAndCountAll({
         where: {
             id: {
-                [Op.substring]: "%" + search + "%"
+                [Op.substring]: search
             }
         },
         limit: perPage,
