@@ -3,8 +3,15 @@ module.exports = (sequelize, DataTypes) => {
   const Categories = sequelize.define(
     "Categories",
     {
-      name: DataTypes.STRING,
-      cat_parent: DataTypes.INTEGER
+      name: {
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: true
+        }
+      },
+      cat_parent: {
+        type: DataTypes.INTEGER
+      }
     },
     {}
   );
