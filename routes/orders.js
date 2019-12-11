@@ -7,10 +7,17 @@ router.get("/", function(req, res) {
     let search = req.query.search;
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
+    let order_status = req.query.order_status;
     db.Orders.findAndCountAll({
+        order: [
+            ["id", "DESC"]
+        ],
         where: {
             id: {
                 [Op.substring]: search
+            },
+            order_status: {
+                [Op.substring]: order_status
             }
         },
         limit: perPage,
@@ -41,7 +48,7 @@ router.get("/customerId/:id", function(req, res) {
         include: "order_products"
     }).then(result => {
         if (!result) {
-            res.status(500).message("orders not exist!");
+            res.status(500).message("Orders not exist!");
         } else res.send(result);
     });
 });
@@ -58,24 +65,23 @@ router.get("/:id", function(req, res) {
 router.post("/", async function(req, res) {
     let cart = req.body.cart;
     let total = req.body.total;
-    total = total + (total * 10) / 100;
     let user_id = req.body.user_id;
     if (!cart || !total || !user_id) {
-        return res.status(400).message("yeu cau dang nhap");
+        return res.status(400).message("Yeu cau dang nhap");
     }
     let t;
     try {
         t = await sequelize.transaction();
         await db.Orders.create({
             customerId: user_id,
-            order_status: false,
+            order_status: 0,
             total_price: total
         }, { transaction: t }).then(async function(result) {
             for (let i in cart) {
                 await db.Order_product.create({
                     orderId: result.id,
                     productId: cart[i].id,
-                    quantity: cart[i].order_time,
+                    quantity: cart[i].quantity,
                     order_price: cart[i].price
                 }, { transaction: t });
             }
@@ -132,7 +138,7 @@ router.delete("/:id", function(req, res) {
         return res.send({
             error: false,
             data: result,
-            message: "user has been updated successfully."
+            message: "Order has been updated successfully."
         });
     });
 });
