@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         productId: DataTypes.INTEGER
     }, {});
     Comment.associate = function(models) {
-        Comment.belongsTo(models.User, { foreignKey: 'userId', targetKey: 'id', as: 'user' });
+        Comment.belongsTo(models.User, { foreignKey: 'userId', sourceKey: 'id', as: 'user' });
     };
     return Comment;
 };

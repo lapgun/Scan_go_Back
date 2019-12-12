@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 });
 //Get all
 router.post("/sort", function(req, res, next) {
-    let currentPage = req.query.page ? parseInt(req.query.page) : 1;
+    let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
     db.Products.findAndCountAll({
         limit: perPage,
