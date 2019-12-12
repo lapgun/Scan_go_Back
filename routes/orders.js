@@ -62,6 +62,24 @@ router.get("/:id", function(req, res) {
     });
 });
 
+//get by day
+router.get("/get/by-day/", function(req, res) {
+    let date = req.query.date
+    db.Orders.findAndCountAll({
+        where: {
+            createdAt: {
+                [Op.substring]: date
+            }
+        },
+        order: [
+            ["createdAt", "ASC"]
+        ]
+    }).then(result => {
+        res.send({ data: result })
+    })
+})
+
+// post
 router.post("/", async function(req, res) {
     let cart = req.body.cart;
     let total = req.body.total;
