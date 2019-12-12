@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require("../models");
 const Op = db.Sequelize.Op;
 
-router.post('/get/', function(req, res) {
+router.post('/get', function(req, res) {
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 3;
     db.Comment.findAndCountAll({
@@ -13,6 +13,7 @@ router.post('/get/', function(req, res) {
         order: [
             ["id", "DESC"]
         ],
+        include: 'user',
         limit: perPage,
         offset: (currentPage - 1) * perPage,
     }).then(results => {
@@ -32,7 +33,9 @@ router.post('/get/', function(req, res) {
 })
 
 router.get("/", function(req, res) {
-    db.Comment.findAndCountAll({}).then(results => {
+    db.Comment.findAndCountAll({
+        include: "user"
+    }).then(results => {
         return res.send(results);
     });
 });
