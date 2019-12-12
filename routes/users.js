@@ -62,7 +62,7 @@ router.get("/detail/:id", function(req, res) {
 
 //Submit admin
 router.put("/admin/:id", function(req, res) {
-    if (req.decoded.role != 2) {
+    if (req.decoded.user_role != 2) {
         return res.send({ error: true, message: "You are not allowed" });
     }
     if (req.body.role == 0) {
