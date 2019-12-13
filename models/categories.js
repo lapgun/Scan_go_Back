@@ -11,11 +11,14 @@ module.exports = (sequelize, DataTypes) => {
       },
       cat_parent: {
         type: DataTypes.INTEGER
-      }
+      },
+      cat_parent_name: {
+        type: DataTypes.STRING
+      },
     },
     {}
   );
-  Categories.associate = function(models) {
+  Categories.associate = function (models) {
     Categories.hasMany(models.Products, {
       foreignKey: "categoriesId",
       sourceKey: "id",

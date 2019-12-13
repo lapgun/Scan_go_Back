@@ -38,6 +38,24 @@ router.get("/", function (req, res) {
     });
 });
 
+
+//get by day 
+
+router.get("/get/by-day/", function (req, res) {
+    let date = req.query.date
+    db.Orders.findAndCountAll({
+        where: {
+            createdAt: {
+                [Op.substring]: date
+            }
+        },
+        order: [
+            ["createdAt", "ASC"]
+        ]
+    }).then(result => {
+        res.send({ data: result })
+    })
+})
 //get many order by id
 router.get("/customerId/:id", function (req, res) {
     let customerId = req.params.id ? req.params.id : undefined;
