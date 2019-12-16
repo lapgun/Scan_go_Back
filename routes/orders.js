@@ -22,6 +22,7 @@ router.get("/", function(req, res) {
         },
         include: 'customer',
         limit: perPage,
+        include: "user",
         offset: (currentPage - 1) * perPage
     }).then(results => {
         let total = results.count;
@@ -39,14 +40,33 @@ router.get("/", function(req, res) {
     });
 });
 
-//get many order by id
+
+//get by day 
+
+router.get("/get/by-day/", function(req, res) {
+        let date = req.query.date
+        db.Orders.findAndCountAll({
+            where: {
+                createdAt: {
+                    [Op.substring]: date
+                }
+            },
+            include: "user",
+            order: [
+                ["createdAt", "ASC"]
+            ]
+        }).then(result => {
+            res.send({ data: result })
+        })
+    })
+    //get many order by id
 router.get("/customerId/:id", function(req, res) {
     let customerId = req.params.id ? req.params.id : undefined;
     db.Orders.findAndCountAll({
         where: {
             customerId: customerId
         },
-        include: "order_products"
+        include: ["order_products", "user"]
     }).then(result => {
         if (!result) {
             res.status(500).message("Orders not exist!");
@@ -57,30 +77,12 @@ router.get("/customerId/:id", function(req, res) {
 //get once order by id
 router.get("/:id", function(req, res) {
     db.Orders.findByPk(req.params.id, {
-        include: "order_products"
+        include: ["order_products", "user"]
     }).then(result => {
         return res.send(result);
     });
 });
 
-//get by day
-router.get("/get/by-day/", function(req, res) {
-    let date = req.query.date
-    db.Orders.findAndCountAll({
-        where: {
-            createdAt: {
-                [Op.substring]: date
-            }
-        },
-        order: [
-            ["createdAt", "ASC"]
-        ]
-    }).then(result => {
-        res.send({ data: result })
-    })
-})
-
-// post
 router.post("/", async function(req, res) {
     let cart = req.body.cart;
     let total = req.body.total;

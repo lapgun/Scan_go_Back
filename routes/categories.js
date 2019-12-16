@@ -4,7 +4,11 @@ var db = require("../models");
 const Op = db.Sequelize.Op;
 /* GET categories listing. */
 router.get("/", function(req, res, next) {
-    db.Categories.findAndCountAll().then(results => {
+    db.Categories.findAndCountAll({
+        order: [
+            ["id", "DESC"]
+        ]
+    }).then(results => {
         let data = results.rows;
         res.send({
             data
@@ -46,9 +50,8 @@ router.get("/cat_product", function(req, res, next) {
         where: {
             cat_parent: {
                 [Op.ne]: 0
-            },
-        },
-        include: "products"
+            }
+        }
     }).then(results => res.send({ data: results }));
 });
 // Get by id
@@ -57,13 +60,6 @@ router.get("/:id", function(req, res, next) {
         res.send({ data: results })
     );
 });
-
-// Post
-router.post("/", function(req, res, next) {
-    let form = req.body;
-    db.Categories.create(form).then(res.send({ message: "create success" }));
-});
-
 //Update
 router.put("/:id", function(req, res, next) {
     let form = req.body;

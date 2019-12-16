@@ -9,7 +9,11 @@ module.exports = (sequelize, DataTypes) => {
     {}
   );
   Order_details.associate = function(models) {
-    Order_details.belongsTo(models.Orders, {foreignKey: 'orderId', target: 'id', as:'order_d'})
+    Order_details.belongsTo(models.Orders, {
+      foreignKey: "orderId",
+      target: "id",
+      as: "order_d"
+    });
   };
   return Order_details;
 };

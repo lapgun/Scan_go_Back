@@ -71,7 +71,7 @@ router.delete("/:id", function(req, res) {
         return res.send({
             error: false,
             data: result,
-            message: "user has been updated successfully."
+            message: "Order has been updated successfully."
         });
     });
 });

@@ -4,13 +4,13 @@ var db = require("../models");
 var multer = require("multer");
 const Op = db.Sequelize.Op;
 
-router.get('/', function(req, res, next) {
+router.get("/", function(req, res, next) {
     db.Products.findAndCountAll({
-        include: "images"
+        include: ["categories", "images"]
     }).then(results => {
-        let data = results.rows
-        res.send({ data: data })
-    })
+        let data = results.rows;
+        res.send({ data: data });
+    });
 });
 //Get all
 router.post("/sort", function(req, res, next) {
@@ -19,7 +19,7 @@ router.post("/sort", function(req, res, next) {
     db.Products.findAndCountAll({
         limit: perPage,
         offset: (currentPage - 1) * perPage,
-        include: "images",
+        include: ["images", "categories"],
         order: [req.body]
     }).then(results => {
         let data = results.rows;
@@ -36,6 +36,8 @@ router.post("/sort", function(req, res, next) {
         });
     });
 });
+
+
 //search
 router.get("/search", function(req, res, next) {
     db.Products.findAndCountAll({
@@ -98,8 +100,7 @@ router.get("/menu/:id", function(req, res, next) {
         where: {
             categoriesId: id
         },
-        include: "images",
-
+        include: "images"
     }).then(results => {
         let data = results.rows;
         res.send({ data });
@@ -109,7 +110,7 @@ router.get("/menu/:id", function(req, res, next) {
 // Get by id
 router.get("/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
-        include: "images",
+        include: ["images", "categories"]
     }).then(results => res.send({ data: results }));
 });
 
@@ -117,7 +118,7 @@ router.get("/:id", function(req, res, next) {
 router.get("/comment/:id", function(req, res, next) {
     db.Products.findByPk(req.params.id, {
         include: "comments",
-        limit: 5,
+        limit: 5
     }).then(results => res.send({ data: results }));
 });
 
@@ -136,21 +137,36 @@ router.post("/", function(req, res) {
 
 router.put("/:id", function(req, res, next) {
     let form = req.body;
-    if (form == "") {
-        console.log("hello")
+
+    if (form.quantity) {
+        db.Products.findByPk(req.params.id).then(result => {
+            let order_time = parseInt(result.dataValues.order_time) + parseInt(form.quantity)
+            db.Products.update({
+                quantity: 1,
+                order_time: order_time
+            }, {
+                where: {
+                    id: req.params.id
+                }
+            }).then(data => {
+                res.send({ data: data, message: "update order time" })
+            })
+        })
     } else {
         db.Products.update(form, {
             where: {
                 id: req.params.id
             }
-        }).then(result => { res.send({ data: result, message: "update success" }) });
+        }).then(result => {
+            res.send({ data: result, message: "Update success" });
+        });
     }
 });
 
 //Delete
 router.delete("/:id", function(req, res, next) {
-    db.Products.destroy({ where: { id: req.params.id } }).then(
-        res.send({ message: "delete success" })
-    );
+    db.Products.destroy({ where: { id: req.params.id } }).then(result => {
+        res.send({ data: result.data.order_time })
+    });
 });
 module.exports = router;
