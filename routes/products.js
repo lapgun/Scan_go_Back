@@ -4,22 +4,22 @@ var db = require("../models");
 var multer = require("multer");
 const Op = db.Sequelize.Op;
 
-router.get('/', function(req, res, next) {
+router.get("/", function (req, res, next) {
     db.Products.findAndCountAll({
-        include: "images"
+        include: "categories"
     }).then(results => {
-        let data = results.rows
-        res.send({ data: data })
-    })
+        let data = results.rows;
+        res.send({ data: data });
+    });
 });
 //Get all
-router.post("/sort", function(req, res, next) {
+router.post("/sort", function (req, res, next) {
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
     db.Products.findAndCountAll({
         limit: perPage,
         offset: (currentPage - 1) * perPage,
-        include: "images",
+        include: ["images", "categories"],
         order: [req.body]
     }).then(results => {
         let data = results.rows;
@@ -36,8 +36,10 @@ router.post("/sort", function(req, res, next) {
         });
     });
 });
+
+
 //search
-router.get("/search", function(req, res, next) {
+router.get("/search", function (req, res, next) {
     db.Products.findAndCountAll({
         where: {
             name: {
@@ -51,7 +53,7 @@ router.get("/search", function(req, res, next) {
     });
 });
 // get orderby id
-router.get("/newest", function(req, res, next) {
+router.get("/newest", function (req, res, next) {
     db.Products.findAndCountAll({
         order: [
             ["id", "DESC"]
@@ -65,7 +67,7 @@ router.get("/newest", function(req, res, next) {
 });
 
 //limit 3
-router.get("/new-products", function(req, res, next) {
+router.get("/new-products", function (req, res, next) {
     db.Products.findAndCountAll({
         order: [
             ["id", "DESC"]
@@ -79,7 +81,7 @@ router.get("/new-products", function(req, res, next) {
 });
 
 // get orderby order_time
-router.get("/order_time", function(req, res, next) {
+router.get("/order_time", function (req, res, next) {
     db.Products.findAndCountAll({
         order: [
             ["order_time", "DESC"]
@@ -92,14 +94,13 @@ router.get("/order_time", function(req, res, next) {
     });
 });
 
-router.get("/menu/:id", function(req, res, next) {
+router.get("/menu/:id", function (req, res, next) {
     let id = req.params.id;
     db.Products.findAndCountAll({
         where: {
             categoriesId: id
         },
-        include: "images",
-
+        include: "images"
     }).then(results => {
         let data = results.rows;
         res.send({ data });
@@ -107,22 +108,22 @@ router.get("/menu/:id", function(req, res, next) {
 });
 
 // Get by id
-router.get("/:id", function(req, res, next) {
+router.get("/:id", function (req, res, next) {
     db.Products.findByPk(req.params.id, {
-        include: "images",
+        include: ["images", "categories"]
     }).then(results => res.send({ data: results }));
 });
 
 // Get by id
-router.get("/comment/:id", function(req, res, next) {
+router.get("/comment/:id", function (req, res, next) {
     db.Products.findByPk(req.params.id, {
         include: "comments",
-        limit: 5,
+        limit: 5
     }).then(results => res.send({ data: results }));
 });
 
 // Post
-router.post("/", function(req, res) {
+router.post("/", function (req, res) {
     let form = req.body;
     if (!form) {
         res.send("form exits");
@@ -134,23 +135,38 @@ router.post("/", function(req, res) {
 
 //Update
 
-router.put("/:id", function(req, res, next) {
+router.put("/:id", function (req, res, next) {
     let form = req.body;
-    if (form == "") {
-        console.log("hello")
+
+    if (form.quantity) {
+        db.Products.findByPk(req.params.id).then(result => {
+            let order_time = parseInt(result.dataValues.order_time) + parseInt(form.quantity)
+            db.Products.update({
+                quantity: 1,
+                order_time: order_time
+            }, {
+                where: {
+                    id: req.params.id
+                }
+            }).then(data => {
+                res.send({ data: data, message: "update order time" })
+            })
+        })
     } else {
         db.Products.update(form, {
             where: {
                 id: req.params.id
             }
-        }).then(result => { res.send({ data: result, message: "update success" }) });
+        }).then(result => {
+            res.send({ data: result, message: "Update success" });
+        });
     }
 });
 
 //Delete
-router.delete("/:id", function(req, res, next) {
-    db.Products.destroy({ where: { id: req.params.id } }).then(
-        res.send({ message: "delete success" })
-    );
+router.delete("/:id", function (req, res, next) {
+    db.Products.destroy({ where: { id: req.params.id } }).then(result => {
+        res.send({ data: result.data.order_time })
+    });
 });
 module.exports = router;

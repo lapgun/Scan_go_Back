@@ -14,6 +14,9 @@ module.exports = {
       cat_parent: {
         type: Sequelize.INTEGER
       },
+      cat_parent_name: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
