@@ -25,6 +25,12 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       as: "order_statuses"
     });
+    Order.belongsTo(models.User,{
+      foreignKey: "customerId",
+      sourceKey: "id",
+      as: "user"
+
+    })
   };
   return Order;
 };

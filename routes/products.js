@@ -12,28 +12,29 @@ router.get("/", function(req, res, next) {
 });
 //Get all
 router.post("/sort", function(req, res, next) {
-  let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
-  let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
-  db.Products.findAndCountAll({
-    limit: perPage,
-    offset: (currentPage - 1) * perPage,
-    include: "images",
-    order: [req.body]
-  }).then(results => {
-    let data = results.rows;
-    let total = results.count;
-    let totalPage = Math.ceil(total / perPage);
-    res.send({
-      data,
-      pagination: {
-        total,
-        perPage,
-        currentPage,
-        totalPage
-      }
+    let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
+    let perPage = req.query.perPage ? parseInt(req.query.perPage) : 5;
+    db.Products.findAndCountAll({
+        limit: perPage,
+        offset: (currentPage - 1) * perPage,
+        include: "images",
+        order: [req.body]
+    }).then(results => {
+        let data = results.rows;
+        let total = results.count;
+        let totalPage = Math.ceil(total / perPage);
+        res.send({
+            data,
+            pagination: {
+                total,
+                perPage,
+                currentPage,
+                totalPage
+            }
+        });
     });
   });
-});
+
 //search
 router.get("/search", function(req, res, next) {
   db.Products.findAndCountAll({

@@ -18,7 +18,6 @@ var commentRouter = require("./routes/comments");
 var loginFacebook = require("./routes/loginFacebook");
 var jwt = require('jsonwebtoken');
 var app = express();
-
 // view engine setup
 app.use(cors({
         "origin": "*",

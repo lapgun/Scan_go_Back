@@ -5,7 +5,6 @@ var passportfb = require("passport-facebook").Strategy;
 var passport = require("passport");
 var session = require('express-session');
 var app = express();
-app.use(passport.initialize());
 app.use(session(
     {
         secret: 'sadasda',
@@ -13,13 +12,14 @@ app.use(session(
         saveUninitialized: true
     }
 ));
+app.use(passport.initialize());
 app.use(passport.session());
 router.get('/', (req, res) => {
     console.log("ádsds");
 });
 router.get('/auth/fb', passport.authenticate('facebook', {scope: "email"}));
 
-router.get('/auth/fb/cb', passport.authenticate('facebook', {successRedirect: '/account', failureRedirect: '/'}),function (req,res) {
+router.get('/auth/fb/cb', passport.authenticate('facebook', {successRedirect: { msg: "thành công" }, failureRedirect: { msg : "lỗi" }}),function (req,res) {
         if(req.user){
             return res.redirect(303, '/#!/fb/');
         } else {
@@ -28,12 +28,11 @@ router.get('/auth/fb/cb', passport.authenticate('facebook', {successRedirect: '/
 });
 
 router.use('/auth/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
+    res.send("oke");
 });
 passport.use(new passportfb({
-        clientID: "373882913288063",
-        clientSecret: "2766e871dd19193d2231285bdcceb433",
+        clientID: "463998524443230",
+        clientSecret: "a2a178ef7f4d59987c8ded37811e4ef2",
         callbackURL: "http://localhost:4000/auth/fb/cb",
         profileFields: ['id', 'displayName', 'photos', 'email'],
         enableProof: true
