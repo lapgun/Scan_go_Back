@@ -26,7 +26,7 @@ module.exports = {
       detail: {
         type: Sequelize.STRING
       },
-      quanity:{
+      quantity: {
         type: Sequelize.INTEGER
       },
       order_time: {

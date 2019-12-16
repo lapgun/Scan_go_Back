@@ -36,6 +36,10 @@ router.get("/", function (req, res) {
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
     db.Comment.findAndCountAll({
+        order: [
+            ["id", "DESC"]
+        ],
+        include: 'user',
         limit: perPage,
         offset: (currentPage - 1) * perPage
     }).then(results => {
@@ -79,6 +83,7 @@ router.post("/", function (req, res) {
         return res.send(result);
     });
 });
+//post pagination
 
 //Update
 router.put("/:id", function (req, res) {
