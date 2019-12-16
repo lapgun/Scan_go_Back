@@ -20,6 +20,7 @@ router.get("/", function(req, res) {
                 [Op.substring]: order_status
             }
         },
+        include: 'customer',
         limit: perPage,
         offset: (currentPage - 1) * perPage
     }).then(results => {
