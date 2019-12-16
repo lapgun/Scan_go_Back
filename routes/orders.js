@@ -21,6 +21,7 @@ router.get("/", function (req, res) {
             }
         },
         limit: perPage,
+        include: "user",
         offset: (currentPage - 1) * perPage
     }).then(results => {
         let total = results.count;
@@ -49,6 +50,7 @@ router.get("/get/by-day/", function (req, res) {
                 [Op.substring]: date
             }
         },
+        include: "user",
         order: [
             ["createdAt", "ASC"]
         ]
@@ -63,7 +65,7 @@ router.get("/customerId/:id", function (req, res) {
         where: {
             customerId: customerId
         },
-        include: "order_products"
+        include: ["order_products", "user"]
     }).then(result => {
         if (!result) {
             res.status(500).message("Orders not exist!");
@@ -74,7 +76,7 @@ router.get("/customerId/:id", function (req, res) {
 //get once order by id
 router.get("/:id", function (req, res) {
     db.Orders.findByPk(req.params.id, {
-        include: "order_products"
+        include: ["order_products", "user"]
     }).then(result => {
         return res.send(result);
     });

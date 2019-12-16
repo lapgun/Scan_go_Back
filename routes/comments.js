@@ -2,9 +2,9 @@ var express = require("express");
 var router = express.Router();
 var db = require("../models");
 const Op = db.Sequelize.Op;
-// get by products Id
 
-router.post("/get/", function(req, res) {
+// get by products Id
+router.post("/get/", function (req, res) {
     let currentPage = req.body.currentPage ? parseInt(req.body.currentPage) : 1;
     let perPage = req.body.perPage ? parseInt(req.body.perPage) : 3;
     db.Comment.findAndCountAll({
@@ -32,7 +32,7 @@ router.post("/get/", function(req, res) {
     });
 });
 
-router.get("/", function(req, res) {
+router.get("/", function (req, res) {
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
     db.Comment.findAndCountAll({
@@ -54,22 +54,34 @@ router.get("/", function(req, res) {
     });
 });
 
+// get all by product Id
+router.get("/get/by_product_id/:id", function (req, res) {
+    db.Comment.findAndCountAll({
+        where: {
+            productId: req.params.id
+        }
+    }).then(result => {
+        res.send(result)
+    })
+})
+
 //get by comment id
-router.get("/:id", function(req, res) {
+router.get("/:id", function (req, res) {
     db.Comment.findByPk(req.params.id).then(result => {
         return res.send(result);
     });
 });
 
 //Post
-router.post("/", function(req, res) {
+router.post("/", function (req, res) {
     let comment = req.body;
     db.Comment.create(comment).then(result => {
         return res.send(result);
     });
 });
 
-router.put("/:id", function(req, res) {
+//Update
+router.put("/:id", function (req, res) {
     let comment_id = req.body.id;
     let comment = req.body;
     db.Comment.update(comment, {
@@ -81,7 +93,8 @@ router.put("/:id", function(req, res) {
     });
 });
 
-router.delete("/:id", function(req, res) {
+//Delete
+router.delete("/:id", function (req, res) {
     let comment_id = req.params.id;
 
     if (!comment_id) {

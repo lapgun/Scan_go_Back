@@ -17,17 +17,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  User.associate = function(models) {};
+  User.associate = function (models) { };
   return User;
 };
-// if(role == 0){
-// cút
-// }
-// if(role== 1){
-// đc xóa thằng 0
-//   ko đc xóa thằng 1 khác
-//   ko đc làm gì thằng 2
-// }
-// if(role==2){
-//   làm gì cũng đc
-// }

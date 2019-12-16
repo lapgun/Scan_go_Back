@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 
 router.get("/", function (req, res, next) {
     db.Products.findAndCountAll({
-        include: "images"
+        include: "categories"
     }).then(results => {
         let data = results.rows;
         res.send({ data: data });
@@ -19,7 +19,7 @@ router.post("/sort", function (req, res, next) {
     db.Products.findAndCountAll({
         limit: perPage,
         offset: (currentPage - 1) * perPage,
-        include: "images",
+        include: ["images", "categories"],
         order: [req.body]
     }).then(results => {
         let data = results.rows;
@@ -36,6 +36,8 @@ router.post("/sort", function (req, res, next) {
         });
     });
 });
+
+
 //search
 router.get("/search", function (req, res, next) {
     db.Products.findAndCountAll({
@@ -108,7 +110,7 @@ router.get("/menu/:id", function (req, res, next) {
 // Get by id
 router.get("/:id", function (req, res, next) {
     db.Products.findByPk(req.params.id, {
-        include: "images"
+        include: ["images", "categories"]
     }).then(results => res.send({ data: results }));
 });
 

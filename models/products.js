@@ -25,6 +25,11 @@ module.exports = (sequelize, DataTypes) => {
       sourceKey: "id",
       as: "comments"
     });
+    Product.belongsTo(models.Categories, {
+      foreignKey: "categoriesId",
+      sourceKey: "id",
+      as: "categories"
+    });
   };
   return Product;
 };
