@@ -27,15 +27,15 @@ router.post("/upload", upload.array("files", 12), function(req, res, next) {
     });
   }
 });
-router.get("/", function(req, res) {
-  db.product_image.findAll().then(result => {
-    res.send({ data: result, msg: "list img" });
-  });
+router.get("/", function (req, res) {
+    db.product_image.findAll().then(result => {
+        res.send({ data: result, msg: "list img" });
+    });
 });
-router.get("/:id", function(req, res) {
-  let picture_id = req.params.id;
-  db.product_image.findByPk(picture_id).then(result => {
-    res.send({ data: result, msg: "list img" });
-  });
+router.get("/:id", function (req, res) {
+    let picture_id = req.params.id;
+    db.product_image.findByPk(picture_id).then(result => {
+        res.send({ data: result, msg: "list img" });
+    });
 });
 module.exports = router;

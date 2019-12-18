@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Order.associate = function(models) {
+  Order.associate = function (models) {
     Order.hasMany(models.Order_product, {
       foreignKey: "orderId",
       sourceKey: "id",
@@ -29,8 +29,8 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "customerId",
       sourceKey: "id",
       as: "user"
-
     })
+
   };
   return Order;
 };
