@@ -60,6 +60,18 @@ router.get("/:id", function(req, res, next) {
         res.send({ data: results })
     );
 });
+
+// post
+
+router.post("/", function(req, res) {
+    let form = req.body;
+    if (!form.name) {
+        return res.send({ error: true, message: 'Created failled' });
+    }
+    db.Categories.create(form).then(result => {
+        res.send({ error: false, data: result, message: "Created success" });
+    });
+});
 //Update
 router.put("/:id", function(req, res, next) {
     let form = req.body;
