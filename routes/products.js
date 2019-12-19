@@ -6,7 +6,7 @@ const Op = db.Sequelize.Op;
 
 router.get("/", function (req, res, next) {
     db.Products.findAndCountAll({
-        include: "categories"
+        include: ["categories", "images"]
     }).then(results => {
         let data = results.rows;
         res.send({ data: data });
@@ -134,39 +134,46 @@ router.post("/", function (req, res) {
 });
 
 //Update
-
 router.put("/:id", function (req, res, next) {
     let form = req.body;
+    db.Products.update(form, {
+        where: {
+            id: req.params.id
+        }
+    }).then(result => {
+        res.send({ data: result, message: "Update success" });
+    });
+});
 
-    if (form.quantity) {
-        db.Products.findByPk(req.params.id).then(result => {
-            let order_time = parseInt(result.dataValues.order_time) + parseInt(form.quantity)
-            db.Products.update({
-                quantity: 1,
-                order_time: order_time
-            }, {
-                where: {
-                    id: req.params.id
-                }
-            }).then(data => {
-                res.send({ data: data, message: "update order time" })
-            })
-        })
-    } else {
-        db.Products.update(form, {
+//Update order_time 
+router.put("/update/order_time/:id", function (req, res, next) {
+    let form = req.body;
+    db.Products.findByPk(req.params.id).then(result => {
+        let order_time = parseInt(result.dataValues.order_time) + parseInt(form.quantity)
+        db.Products.update({
+            quantity: 1,
+            order_time: order_time
+        }, {
             where: {
                 id: req.params.id
             }
-        }).then(result => {
-            res.send({ data: result, message: "Update success" });
-        });
-    }
-});
+        }).then(data => {
+            res.send({ data: data, message: "update order time" })
+        })
+    })
+})
 
 //Delete
 router.delete("/:id", function (req, res, next) {
-    db.Products.destroy({ where: { id: req.params.id } }).then(result => {
-        res.send({ data: result.data.order_time })
-    });
+    db.Products.findByPk(req.params.id).then(r => {
+        let picture_id = r.dataValues.picture
+        db.Products.destroy({ where: { id: req.params.id } }).then(result => {
+            db.product_image.destroy({ where: { id: picture_id } }).then(picture => {
+                res.send({ message: "Delete picture" })
+            })
+            res.send({ message:"Delete success" })
+        });
+    })
+
 });
 module.exports = router;

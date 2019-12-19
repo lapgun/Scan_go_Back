@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: { type: DataTypes.STRING, validate: { notEmpty: true } },
       categoriesId: { type: DataTypes.INTEGER, validate: { notEmpty: true } },
-      picture: { type: DataTypes.STRING, validate: { notEmpty: true } },
+      picture: { type: DataTypes.INTEGER, validate: { notEmpty: true } },
       price: { type: DataTypes.INTEGER, validate: { notEmpty: true } },
       description: { type: DataTypes.STRING, validate: { notEmpty: true } },
       detail: { type: DataTypes.STRING, validate: { notEmpty: true } },

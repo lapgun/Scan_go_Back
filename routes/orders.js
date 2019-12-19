@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require("../models");
 const Op = db.Sequelize.Op;
 const sequelize = db.sequelize;
-router.get("/", function (req, res) {
+router.get("/", function(req, res) {
     let search = req.query.search;
     let currentPage = req.query.currentPage ? parseInt(req.query.currentPage) : 1;
     let perPage = req.query.perPage ? parseInt(req.query.perPage) : 6;
@@ -20,6 +20,7 @@ router.get("/", function (req, res) {
                 [Op.substring]: order_status
             }
         },
+        include: 'customer',
         limit: perPage,
         include: "user",
         offset: (currentPage - 1) * perPage
@@ -42,24 +43,24 @@ router.get("/", function (req, res) {
 
 //get by day 
 
-router.get("/get/by-day/", function (req, res) {
-    let date = req.query.date
-    db.Orders.findAndCountAll({
-        where: {
-            createdAt: {
-                [Op.substring]: date
-            }
-        },
-        include: "user",
-        order: [
-            ["createdAt", "ASC"]
-        ]
-    }).then(result => {
-        res.send({ data: result })
+router.get("/get/by-day/", function(req, res) {
+        let date = req.query.date
+        db.Orders.findAndCountAll({
+            where: {
+                createdAt: {
+                    [Op.substring]: date
+                }
+            },
+            include: "user",
+            order: [
+                ["createdAt", "ASC"]
+            ]
+        }).then(result => {
+            res.send({ data: result })
+        })
     })
-})
-//get many order by id
-router.get("/customerId/:id", function (req, res) {
+    //get many order by id
+router.get("/customerId/:id", function(req, res) {
     let customerId = req.params.id ? req.params.id : undefined;
     db.Orders.findAndCountAll({
         where: {
@@ -74,7 +75,7 @@ router.get("/customerId/:id", function (req, res) {
 });
 
 //get once order by id
-router.get("/:id", function (req, res) {
+router.get("/:id", function(req, res) {
     db.Orders.findByPk(req.params.id, {
         include: ["order_products", "user"]
     }).then(result => {
@@ -82,7 +83,7 @@ router.get("/:id", function (req, res) {
     });
 });
 
-router.post("/", async function (req, res) {
+router.post("/", async function(req, res) {
     let cart = req.body.cart;
     let total = req.body.total;
     let user_id = req.body.user_id;
@@ -96,7 +97,7 @@ router.post("/", async function (req, res) {
             customerId: user_id,
             order_status: 0,
             total_price: total
-        }, { transaction: t }).then(async function (result) {
+        }, { transaction: t }).then(async function(result) {
             for (let i in cart) {
                 await db.Order_product.create({
                     orderId: result.id,
@@ -111,7 +112,7 @@ router.post("/", async function (req, res) {
         await t.rollback();
     }
 });
-router.put("/:id", function (req, res) {
+router.put("/:id", function(req, res) {
     let order_id = req.body.id;
     let order = req.body;
     db.Orders.update(order, {
@@ -122,7 +123,7 @@ router.put("/:id", function (req, res) {
         res.send(result);
     });
 });
-router.put("/confirm/:id", function (req, res) {
+router.put("/confirm/:id", function(req, res) {
     let order_id = req.params.id ? req.params.id : undefined;
     db.Orders.update({ order_status: 1 }, {
         where: {
@@ -132,7 +133,7 @@ router.put("/confirm/:id", function (req, res) {
         res.send({ data: result });
     });
 });
-router.put("/cancel/:id", function (req, res) {
+router.put("/cancel/:id", function(req, res) {
     let order_id = req.params.id ? req.params.id : undefined;
     db.Orders.update({ order_status: 2 }, {
         where: {
@@ -142,7 +143,7 @@ router.put("/cancel/:id", function (req, res) {
         res.send({ data: result });
     });
 });
-router.delete("/:id", function (req, res) {
+router.delete("/:id", function(req, res) {
     let order_id = req.params.id;
     if (!order_id) {
         return res

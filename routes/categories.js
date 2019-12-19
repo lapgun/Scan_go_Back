@@ -25,7 +25,10 @@ router.get("/search", function (req, res, next) {
             name: {
                 [Op.substring]: search
             }
-        }
+        },
+        order: [
+            ["id", "DESC"]
+        ]
     }).then(results => {
         let data = results.rows;
         return res.send({ data: data });
@@ -38,6 +41,9 @@ router.get("/cat_parent/:id", function (req, res, next) {
         where: {
             cat_parent: key
         },
+        order: [
+            ["id", "DESC"]
+        ],
         include: "products"
     }).then(results => {
         res.send({ data: results });
@@ -51,7 +57,10 @@ router.get("/cat_product", function (req, res, next) {
             cat_parent: {
                 [Op.ne]: 0
             }
-        }
+        },
+        order: [
+            ["id", "DESC"]
+        ]
     }).then(results => res.send({ data: results }));
 });
 // Get by id
@@ -61,12 +70,15 @@ router.get("/:id", function (req, res, next) {
     );
 });
 
-// Post
+//Post 
 router.post("/", function (req, res, next) {
-    let form = req.body;
-    db.Categories.create(form).then(res.send({ message: "create success" }));
-});
-
+    if (!req.body.name || !req.body) {
+        return res.send({ error: true, message: "Create failed" })
+    }
+    db.Categories.create(req.body).then(result => {
+        res.send({ data: result, error: false, message: "Create category succes" })
+    })
+})
 //Update
 router.put("/:id", function (req, res, next) {
     let form = req.body;
@@ -82,7 +94,7 @@ router.put("/:id", function (req, res, next) {
 router.delete("/:id", function (req, res, next) {
     let id = req.params.id;
     db.Categories.destroy({ where: { id: id } }).then(
-        res.send({ message: "delete success" })
+        res.send({ message: "Delete success" })
     );
 });
 module.exports = router;
