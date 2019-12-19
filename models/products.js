@@ -1,18 +1,16 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
   const Product = sequelize.define(
-    "Products",
-    {
-      name: { type: DataTypes.STRING, validate: { notEmpty: true } },
-      categoriesId: { type: DataTypes.INTEGER, validate: { notEmpty: true } },
-      picture: { type: DataTypes.INTEGER, validate: { notEmpty: true } },
-      price: { type: DataTypes.INTEGER, validate: { notEmpty: true } },
-      description: { type: DataTypes.STRING, validate: { notEmpty: true } },
-      detail: { type: DataTypes.STRING, validate: { notEmpty: true } },
-      quantity: { type: DataTypes.INTEGER },
-      order_time: { type: DataTypes.STRING }
-    },
-    {}
+    "Products", {
+    name: { type: DataTypes.STRING },
+    categoriesId: { type: DataTypes.INTEGER },
+    picture: { type: DataTypes.STRING },
+    price: { type: DataTypes.INTEGER },
+    description: { type: DataTypes.STRING },
+    detail: { type: DataTypes.STRING },
+    quantity: { type: DataTypes.INTEGER },
+    order_time: { type: DataTypes.STRING }
+  }, {}
   );
   Product.associate = function (models) {
     Product.belongsTo(models.product_image, {

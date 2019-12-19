@@ -18,9 +18,12 @@ router.get("/:id", function(req, res) {
 });
 
 router.post("/", function(req, res) {
-    let slide = req.body;
-    db.Slide.create(slide).then(result => {
-        return res.send(result);
+    let form = req.body;
+    if (!form.name || !form.image) {
+        return res.send({ error: true, message: 'Create failled' })
+    }
+    db.Slide.create(form).then(result => {
+        res.send({ error: false, data: result, message: "Created success" });
     });
 });
 router.put("/:id", function(req, res) {

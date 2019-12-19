@@ -100,17 +100,19 @@ router.get("/menu/:id", function (req, res, next) {
         where: {
             categoriesId: id
         },
-        include: "images"
+        include: ["images", "categories"]
     }).then(results => {
         let data = results.rows;
+        console.log('aaa', results.rows)
         res.send({ data });
+
     });
 });
 
 // Get by id
 router.get("/:id", function (req, res, next) {
     db.Products.findByPk(req.params.id, {
-        include: ["images", "categories"]
+        include: ["images", "categories", "comments"]
     }).then(results => res.send({ data: results }));
 });
 
@@ -125,11 +127,11 @@ router.get("/comment/:id", function (req, res, next) {
 // Post
 router.post("/", function (req, res) {
     let form = req.body;
-    if (!form) {
-        res.send("form exits");
+    if (!form.name || !form.categoriesId || !form.picture || !form.price || !form.description || !form.detail) {
+        return res.send({ error: true, message: "Create failed" });
     }
     db.Products.create(form).then(result => {
-        res.send({ data: result, msg: "thanh cong" });
+        res.send({ error: false, data: result, message: "Create success" });
     });
 });
 
@@ -171,7 +173,7 @@ router.delete("/:id", function (req, res, next) {
             db.product_image.destroy({ where: { id: picture_id } }).then(picture => {
                 res.send({ message: "Delete picture" })
             })
-            res.send({ message:"Delete success" })
+            res.send({ message: "Delete success" })
         });
     })
 
