@@ -25,12 +25,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Comment.associate = function(models) {
+  Comment.associate = function (models) {
     Comment.belongsTo(models.User, {
       foreignKey: "userId",
       targetKey: "id",
       as: "user"
     });
+    Comment.belongsTo(models.Products, {
+      foreignKey: "productId",
+      targetKey: "id",
+      as: "product"
+    })
   };
   return Comment;
 };
