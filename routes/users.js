@@ -5,6 +5,23 @@ var passwordHash = require("password-hash");
 var jwt = require("jsonwebtoken");
 const Op = db.Sequelize.Op;
 
+// get search
+
+router.get("/search", function(req, res) {
+    let search = req.query.search;
+
+    db.User.findAndCountAll({
+        where: {
+            name: {
+                [Op.substring]: search
+            }
+        }
+    }).then(results => {
+        let data = results.rows;
+        return res.send({ data: data })
+    })
+})
+
 //get decoded
 router.get("/decoded/", function(req, res) {
     let decoded = req.decoded;

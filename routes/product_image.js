@@ -17,7 +17,6 @@ router.post("/upload", upload.array("files", 12), function(req, res, next) {
     const dataInsert = {};
     //prepare data to insert
     dataInsert.default_image = req.files[0].filename;
-
     req.files.forEach((file, index) => {
       dataInsert[columnPrefixName + "" + parseInt(index + 1)] = file.filename;
     });
@@ -27,12 +26,12 @@ router.post("/upload", upload.array("files", 12), function(req, res, next) {
     });
   }
 });
-router.get("/", function (req, res) {
+router.get("/", function(req, res) {
     db.product_image.findAll().then(result => {
         res.send({ data: result, msg: "list img" });
     });
 });
-router.get("/:id", function (req, res) {
+router.get("/:id", function(req, res) {
     let picture_id = req.params.id;
     db.product_image.findByPk(picture_id).then(result => {
         res.send({ data: result, msg: "list img" });

@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       img: DataTypes.STRING,
-      parentId: DataTypes.INTEGER,
       userId: DataTypes.INTEGER,
       rating: {
         type: DataTypes.INTEGER,
