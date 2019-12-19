@@ -39,7 +39,7 @@ router.get("/", function(req, res) {
         order: [
             ["id", "DESC"]
         ],
-        include: 'user',
+        include: ["user", "product"],
         limit: perPage,
         offset: (currentPage - 1) * perPage
     }).then(results => {
