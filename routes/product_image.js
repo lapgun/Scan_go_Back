@@ -4,7 +4,7 @@ var db = require("../models");
 var multer = require("multer");
 var storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null, "C:/scan-and-go/Scan-Go-FrontEnd/static");
+    cb(null, "D:/vue/Scan-Go-FrontEnd/static");
   },
   filename: function(req, file, cb) {
     cb(null, Date.now() + "_" + file.originalname);
