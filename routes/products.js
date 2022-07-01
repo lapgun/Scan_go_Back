@@ -118,9 +118,7 @@ router.post("/", function(req, res) {
   if (!form) {
     res.send("form exits");
   }
-  db.Products.create(form).then(result => {
-    res.send({ data: result, msg: "thanh cong" });
-  });
+  db.Products.create(form).then(res.send({ message: "create success" }));
 });
 
 //Update
